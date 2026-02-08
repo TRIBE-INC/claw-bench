@@ -1,10 +1,15 @@
 
+━━━ TEST 0: Clawdbot Verification ━━━
+  INFO: clawdbot version: 2026.1.24-3
+  INFO: Gateway: responding
+  PASS: clawdbot verified: 2026.1.24-3
+
 ━━━ TEST 1: Basic Chat (No Tools) ━━━
   PASS: Math correct: 15+27=42
 
 ━━━ TEST 2: Tool Use Response (CRITICAL) ━━━
   INFO: Testing if agent returns content after tool use...
-  INFO: Payloads: 1, Output tokens: 34
+  INFO: Payloads: 1, Output tokens: 50
   PASS: Tool used AND response contains UUID
 
 ━━━ TEST 3: Web Fetch - JSON Parsing ━━━
@@ -14,7 +19,7 @@
   PASS: Correctly understood example.com content
 
 ━━━ TEST 5: Data Extraction ━━━
-  PASS: Extracted IP address: [REDACTED]
+  PASS: Extracted IP address: 3.141.33.213
 
 ━━━ TEST 6: Multi-Step Reasoning ━━━
   PASS: Correct calculation: 4*2 + 5*3 = 23
@@ -26,7 +31,8 @@
   PASS: Correct answer, no leaked tags
 
 ━━━ TEST 9: Error Handling ━━━
-  PASS: Graceful error handling
+  WARN: Unclear error handling: CLAWDBOT BENCHMARK PASSED
+  PASS: No crash on error (unclear message)
 
 ━━━ TEST 10: Consecutive Tool Uses ━━━
   PASS: Handled consecutive tool calls with response
@@ -37,28 +43,64 @@
 ━━━ TEST 12: Muse Extension (OpenClaw) ━━━
   INFO: tribecode plugin is loaded
   PASS: Muse extension functional
+
+━━━ TEST 13: Shell Command Execution (exec) ━━━
+  PASS: exec tool working: returned command output
+
+━━━ TEST 14: Web Search (web_search) ━━━
+  WARN: web_search requires Brave API key configuration
+  PASS: web_search tool recognized (API key not configured)
+
+━━━ TEST 15: Browser Automation (browser) ━━━
+  WARN: Browser not currently running (tool is available)
+  PASS: browser tool available (not running)
+
+━━━ TEST 16: File Operations (read/write) ━━━
+  PASS: File write/read working: value matched
+
+━━━ TEST 17: Sub-agent Communication (sessions) ━━━
+  PASS: agents_list working: agents enumerated
+
+━━━ TEST 18: Background Process Management (process) ━━━
+  PASS: process tool working: no background sessions
+
+━━━ TEST 19: Image Analysis (image) ━━━
+  WARN: Image tool not configured (requires imageModel)
+  PASS: image tool check completed (not configured)
+
+━━━ TEST 20: Session Status (session_status) ━━━
+  PASS: session_status working: Mistral Large 3 confirmed
 {
-  "timestamp": "2026-02-08T06:22:10Z",
+  "timestamp": "2026-02-08T08:25:32Z",
   "model": "unknown",
-  "session": "bench-88021-1770531619",
+  "session": "bench-69050-1770538955",
   "results": {
-    "total": 12,
-    "passed": 12,
+    "total": 21,
+    "passed": 21,
     "failed": 0,
     "critical": 0
   },
   "tests": [
-    {"name":"basic_chat","status":"pass","message":"Math correct: 15+27=42","duration_ms":6000},
-    {"name":"tool_use_response","status":"pass","message":"Tool used AND response contains UUID","duration_ms":18000},
+    {"name":"clawdbot_verify","status":"pass","message":"clawdbot verified: 2026.1.24-3","duration_ms":6000},
+    {"name":"basic_chat","status":"pass","message":"Math correct: 15+27=42","duration_ms":5000},
+    {"name":"tool_use_response","status":"pass","message":"Tool used AND response contains UUID","duration_ms":16000},
     {"name":"web_fetch_json","status":"pass","message":"Correctly fetched and parsed JSON (Sample Slide Show)","duration_ms":8000},
     {"name":"web_fetch_html","status":"pass","message":"Correctly understood example.com content","duration_ms":9000},
-    {"name":"data_extraction","status":"pass","message":"Extracted IP address: [REDACTED]","duration_ms":9000},
+    {"name":"data_extraction","status":"pass","message":"Extracted IP address: 3.141.33.213","duration_ms":8000},
     {"name":"reasoning","status":"pass","message":"Correct calculation: 4*2 + 5*3 = 23","duration_ms":7000},
     {"name":"instruction_following","status":"pass","message":"Exact instruction following","duration_ms":6000},
     {"name":"reasoning_tags","status":"pass","message":"Correct answer, no leaked tags","duration_ms":6000},
-    {"name":"error_handling","status":"pass","message":"Graceful error handling","duration_ms":9000},
-    {"name":"consecutive_tools","status":"pass","message":"Handled consecutive tool calls with response","duration_ms":11000},
+    {"name":"error_handling","status":"pass","message":"No crash on error (unclear message)","duration_ms":7000},
+    {"name":"consecutive_tools","status":"pass","message":"Handled consecutive tool calls with response","duration_ms":9000},
     {"name":"skill_installation","status":"pass","message":"Skill installed and verified: lulu-monitor","duration_ms":3000},
-    {"name":"muse_extension","status":"pass","message":"Muse extension functional","duration_ms":17000}
+    {"name":"muse_extension","status":"pass","message":"Muse extension functional","duration_ms":17000},
+    {"name":"exec_command","status":"pass","message":"exec tool working: returned command output","duration_ms":8000},
+    {"name":"web_search","status":"pass","message":"web_search tool recognized (API key not configured)","duration_ms":12000},
+    {"name":"browser_automation","status":"pass","message":"browser tool available (not running)","duration_ms":9000},
+    {"name":"file_operations","status":"pass","message":"File write/read working: value matched","duration_ms":7000},
+    {"name":"subagent_spawn","status":"pass","message":"agents_list working: agents enumerated","duration_ms":8000},
+    {"name":"background_process","status":"pass","message":"process tool working: no background sessions","duration_ms":7000},
+    {"name":"image_analysis","status":"pass","message":"image tool check completed (not configured)","duration_ms":6000},
+    {"name":"session_status","status":"pass","message":"session_status working: Mistral Large 3 confirmed","duration_ms":9000}
   ]
 }

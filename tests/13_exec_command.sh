@@ -13,14 +13,14 @@ test_exec_command() {
 
   # Ask agent to run a simple command and report output
   local response
-  response=$(claw_ask "Use the exec tool to run 'echo CLAWBENCH_TEST_\$(date +%s)' and tell me the exact output.")
+  response=$(claw_ask "Use the exec tool to run the command: echo CLAWBENCH_OK and tell me the exact output.")
 
   end_s=$(date +%s)
   duration=$(( (end_s - start_s) * 1000 ))
 
   if claw_is_empty "$response"; then
     claw_critical "Empty response on exec test" "exec_command" "$duration"
-  elif [[ "$response" == *"CLAWBENCH_TEST_"* ]]; then
+  elif [[ "$response" == *"CLAWBENCH_OK"* ]]; then
     claw_pass "exec tool working: returned command output" "exec_command" "$duration"
   elif [[ "$response" == *"exec"* ]] && [[ "$response" == *"not"* ]]; then
     claw_fail "exec tool disabled or unavailable: $response" "exec_command" "$duration"

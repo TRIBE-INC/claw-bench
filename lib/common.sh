@@ -79,8 +79,11 @@ claw_ask() {
       ;;
 
     ssh)
+      # Use base64 encoding for reliable message transmission through SSH
+      local encoded_message
+      encoded_message=$(echo -n "$message" | base64)
       json_result=$(ssh -n -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
-        "timeout $CLAW_TIMEOUT clawdbot agent --session-id '$call_session' --message '$message' --json 2>/dev/null" \
+        "timeout $CLAW_TIMEOUT clawdbot agent --session-id '$call_session' --message \"\$(echo '$encoded_message' | base64 -d)\" --json 2>/dev/null" \
         2>/dev/null) || json_result='{"error":"timeout"}'
       ;;
 
@@ -127,8 +130,11 @@ claw_ask_json() {
       ;;
 
     ssh)
+      # Use base64 encoding for reliable message transmission through SSH
+      local encoded_message
+      encoded_message=$(echo -n "$message" | base64)
       result=$(ssh -n -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
-        "timeout $CLAW_TIMEOUT clawdbot agent --session-id '$CLAW_SESSION' --message '$message' --json 2>/dev/null" \
+        "timeout $CLAW_TIMEOUT clawdbot agent --session-id '$CLAW_SESSION' --message \"\$(echo '$encoded_message' | base64 -d)\" --json 2>/dev/null" \
         2>/dev/null)
       ;;
 

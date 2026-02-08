@@ -1,6 +1,6 @@
 # Benchmark Report: Mistral Large 3
 
-**Date:** 2026-02-08 06:22:10 UTC
+**Date:** 2026-02-08 08:25:32 UTC
 **Model ID:** mistral.mistral-large-3-675b-instruct
 **Provider:** Mistral AI
 
@@ -15,8 +15,8 @@
 
 | Metric | Value |
 |--------|-------|
-| Total Tests | 12 |
-| Passed | 12 |
+| Total Tests | 21 |
+| Passed | 21 |
 | Failed | 0 |
 | Critical Failures | 0 |
 | Pass Rate | 100.0% |
@@ -25,6 +25,7 @@
 
 | Test | Status | Notes |
 |------|--------|-------|
+| clawdbot_verify | ✅ PASS | - |
 | basic_chat | ✅ PASS | - |
 | tool_use_response | ✅ PASS | - |
 | web_fetch_json | ✅ PASS | - |
@@ -37,6 +38,14 @@
 | consecutive_tools | ✅ PASS | - |
 | skill_installation | ✅ PASS | - |
 | muse_extension | ✅ PASS | - |
+| exec_command | ✅ PASS | - |
+| web_search | ✅ PASS | - |
+| browser_automation | ✅ PASS | - |
+| file_operations | ✅ PASS | - |
+| subagent_spawn | ✅ PASS | - |
+| background_process | ✅ PASS | - |
+| image_analysis | ✅ PASS | - |
+| session_status | ✅ PASS | - |
 
 ## Comparison to Kimi K2
 
