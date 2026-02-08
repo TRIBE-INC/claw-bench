@@ -1,0 +1,64 @@
+
+━━━ TEST 1: Basic Chat (No Tools) ━━━
+  FAIL: Expected 42, got: The provided model identifier is invalid.
+
+━━━ TEST 2: Tool Use Response (CRITICAL) ━━━
+  INFO: Testing if agent returns content after tool use...
+  INFO: Payloads: 1, Output tokens: 0
+  FAIL: Response doesn't contain UUID: The provided model identifier is invalid.
+
+━━━ TEST 3: Web Fetch - JSON Parsing ━━━
+  FAIL: Expected slideshow title, got: The provided model identifier is invalid.
+
+━━━ TEST 4: Web Fetch - HTML Understanding ━━━
+  FAIL: Didn't understand content: The provided model identifier is invalid.
+
+━━━ TEST 5: Data Extraction ━━━
+  FAIL: Not a valid IP: The provided model identifier is invalid.
+
+━━━ TEST 6: Multi-Step Reasoning ━━━
+  FAIL: Expected 23, got: The provided model identifier is invalid.
+
+━━━ TEST 7: Instruction Following ━━━
+  FAIL: Did not follow instructions: The provided model identifier is invalid.
+
+━━━ TEST 8: No Reasoning Tag Leakage ━━━
+  FAIL: Wrong answer: The provided model identifier is invalid.
+
+━━━ TEST 9: Error Handling ━━━
+  PASS: Graceful error handling
+
+━━━ TEST 10: Consecutive Tool Uses ━━━
+  FAIL: Missing expected data: The provided model identifier is invalid.
+
+━━━ TEST 11: Skill Installation (ClawHub) ━━━
+  PASS: Skill installed and verified: lulu-monitor
+
+━━━ TEST 12: Muse Extension (OpenClaw) ━━━
+  INFO: tribecode plugin is loaded
+  PASS: Muse extension loaded (response: The provided model identifier is invalid....)
+{
+  "timestamp": "2026-02-08T06:24:58Z",
+  "model": "unknown",
+  "session": "bench-89987-1770531827",
+  "results": {
+    "total": 12,
+    "passed": 3,
+    "failed": 9,
+    "critical": 0
+  },
+  "tests": [
+    {"name":"basic_chat","status":"fail","message":"Expected 42, got: The provided model identifier is invalid.","duration_ms":5000},
+    {"name":"tool_use_response","status":"fail","message":"Response doesn't contain UUID: The provided model identifier is invalid.","duration_ms":11000},
+    {"name":"web_fetch_json","status":"fail","message":"Expected slideshow title, got: The provided model identifier is invalid.","duration_ms":4000},
+    {"name":"web_fetch_html","status":"fail","message":"Didn't understand content: The provided model identifier is invalid.","duration_ms":5000},
+    {"name":"data_extraction","status":"fail","message":"Not a valid IP: The provided model identifier is invalid.","duration_ms":5000},
+    {"name":"reasoning","status":"fail","message":"Expected 23, got: The provided model identifier is invalid.","duration_ms":4000},
+    {"name":"instruction_following","status":"fail","message":"Did not follow instructions: The provided model identifier is invalid.","duration_ms":5000},
+    {"name":"reasoning_tags","status":"fail","message":"Wrong answer: The provided model identifier is invalid.","duration_ms":5000},
+    {"name":"error_handling","status":"pass","message":"Graceful error handling","duration_ms":5000},
+    {"name":"consecutive_tools","status":"fail","message":"Missing expected data: The provided model identifier is invalid.","duration_ms":5000},
+    {"name":"skill_installation","status":"pass","message":"Skill installed and verified: lulu-monitor","duration_ms":3000},
+    {"name":"muse_extension","status":"pass","message":"Muse extension loaded (response: The provided model identifier is invalid....)","duration_ms":12000}
+  ]
+}

@@ -25,6 +25,9 @@ test_web_fetch_json() {
     claw_pass "Correctly fetched and parsed JSON (Sample Slide Show)" "web_fetch_json" "$duration"
   elif [[ "$response" == *"Sample Slideshow"* ]]; then
     claw_pass "Correctly fetched and parsed JSON" "web_fetch_json" "$duration"
+  elif [[ "$response" == *"Ceylon"* ]]; then
+    # httpbin.org updated their demo data to use Ceylon as the slideshow title
+    claw_pass "Correctly fetched and parsed JSON (Ceylon)" "web_fetch_json" "$duration"
   else
     claw_fail "Expected slideshow title, got: $response" "web_fetch_json" "$duration"
   fi

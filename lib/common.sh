@@ -64,28 +64,47 @@ claw_init() {
 # Usage: claw_ask "Your message here"
 claw_ask() {
   local message="$1"
+  local json_result
   local result
 
   case "$CLAW_MODE" in
     local)
-      result=$(timeout "$CLAW_TIMEOUT" clawdbot agent \
+      json_result=$(timeout "$CLAW_TIMEOUT" clawdbot agent \
         --session-id "$CLAW_SESSION" \
-        --message "$message" 2>/dev/null) || result="CLAW_TIMEOUT"
+        --message "$message" \
+        --json 2>/dev/null) || json_result='{"error":"timeout"}'
       ;;
 
     ssh)
-      result=$(ssh -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
-        "timeout $CLAW_TIMEOUT clawdbot agent --session-id '$CLAW_SESSION' --message '$message' 2>/dev/null" \
-        2>/dev/null) || result="CLAW_TIMEOUT"
+      json_result=$(ssh -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
+        "timeout $CLAW_TIMEOUT clawdbot agent --session-id '$CLAW_SESSION' --message '$message' --json 2>/dev/null" \
+        2>/dev/null) || json_result='{"error":"timeout"}'
       ;;
 
     api)
       # WebSocket-based gateway doesn't have REST API
       # This is a placeholder for future REST API support
       echo "Error: API mode not yet implemented for clawdbot gateway" >&2
-      result="CLAW_NOT_IMPLEMENTED"
+      echo "CLAW_NOT_IMPLEMENTED"
+      return
       ;;
   esac
+
+  # Extract text from JSON payload
+  # Try multiple paths since response format varies
+  result=$(echo "$json_result" | jq -r '
+    .result.payloads[0].text //
+    .result.payloads[].text //
+    .response //
+    .text //
+    .error //
+    "CLAW_EMPTY_RESPONSE"
+  ' 2>/dev/null) || result="CLAW_JSON_PARSE_ERROR"
+
+  # Handle timeout/error cases
+  if [ -z "$result" ] || [ "$result" = "null" ]; then
+    result="CLAW_EMPTY_RESPONSE"
+  fi
 
   echo "$result"
 }
@@ -132,7 +151,7 @@ claw_is_empty() {
 
   # Common non-responses
   case "$response" in
-    "completed"|"done"|"ok"|"CLAW_TIMEOUT"|"CLAW_NOT_IMPLEMENTED")
+    "completed"|"done"|"ok"|"null"|"CLAW_TIMEOUT"|"CLAW_NOT_IMPLEMENTED"|"CLAW_EMPTY_RESPONSE"|"CLAW_JSON_PARSE_ERROR")
       return 0
       ;;
   esac

@@ -1,6 +1,6 @@
 # claw-bench
 
-A comprehensive benchmark suite for testing [clawdbot](https://github.com/anthropics/clawdbot) agents.
+A comprehensive benchmark suite for testing [clawdbot](https://github.com/openclaw/clawdbot) agents.
 
 ## What It Tests
 
@@ -12,6 +12,8 @@ A comprehensive benchmark suite for testing [clawdbot](https://github.com/anthro
 | **Tag Stripping** | Reasoning tag leakage | Ensures `<reasoning>` tags are hidden |
 | **Error Handling** | Invalid URLs, failures | Graceful error messages |
 | **Multi-step** | Consecutive tool calls | Complex workflows complete properly |
+| **Installation** | ClawHub skill install | Skills can be installed from registry |
+| **OpenClaw** | Muse extension | TribeCode/Muse extension is functional |
 
 ## Quick Start
 
@@ -50,7 +52,7 @@ export CLAW_TOKEN="your-gateway-token"
 ## Installation
 
 ```bash
-git clone https://github.com/anthropics/clawdbot.git
+git clone https://github.com/openclaw/clawdbot.git
 cd clawdbot/claw-bench
 chmod +x run.sh
 ```
@@ -138,6 +140,28 @@ Tests multiple tool calls in a single request.
 
 **Pass:** All tool results reported
 **Fail:** Partial results or empty response
+
+### 11. Skill Installation (ClawHub)
+Tests installing a skill from the ClawHub registry using the `clawhub` CLI.
+
+**Pass:** Skill installs and files exist in target directory
+**Fail:** Installation fails or skill not found
+
+**Note:** Currently uses `lulu-monitor` as the test skill. To test muse specifically:
+```bash
+clawhub install alexander-morris/muse
+```
+
+### 12. Muse Extension (OpenClaw Runtime)
+Tests that the Muse/TribeCode extension is loaded and functional.
+
+**Pass:** Plugin loaded and tribe_status returns successfully
+**Fail:** Plugin not loaded or tools unavailable
+
+**Prerequisite:** Enable the tribecode plugin:
+```bash
+clawdbot plugins enable tribecode
+```
 
 ## Exit Codes
 

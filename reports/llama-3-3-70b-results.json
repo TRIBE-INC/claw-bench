@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-02-08T06:26:22Z",
+  "model": "unknown",
+  "session": "bench-90822-1770531911",
+  "results": {
+    "total": 12,
+    "passed": 3,
+    "failed": 9,
+    "critical": 0
+  },
+  "tests": [
+    {"name":"basic_chat","status":"fail","message":"Expected 42, got: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Retry your request with the ID or ARN of an inference profile that contains this model.","duration_ms":5000},
+    {"name":"tool_use_response","status":"fail","message":"Response doesn't contain UUID: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Retry your request with the ID or ARN of an inference profile that contains this model.","duration_ms":10000},
+    {"name":"web_fetch_json","status":"fail","message":"Expected slideshow title, got: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Retry your request with the ID or ARN of an inference profile that contains this model.","duration_ms":5000},
+    {"name":"web_fetch_html","status":"fail","message":"Didn't understand content: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Retry your request with the ID or ARN of an inference profile that contains this model.","duration_ms":4000},
+    {"name":"data_extraction","status":"fail","message":"Not a valid IP: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Retry your request with the ID or ARN of an inference profile that contains this model.","duration_ms":5000},
+    {"name":"reasoning","status":"fail","message":"Expected 23, got: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Retry your request with the ID or ARN of an inference profile that contains this model.","duration_ms":5000},
+    {"name":"instruction_following","status":"fail","message":"Did not follow instructions: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Retry your request with the ID or ARN of an inference profile that contains this model.","duration_ms":5000},
+    {"name":"reasoning_tags","status":"fail","message":"Wrong answer: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Retry your request with the ID or ARN of an inference profile that contains this model.","duration_ms":5000},
+    {"name":"error_handling","status":"pass","message":"No crash on error (unclear message)","duration_ms":4000},
+    {"name":"consecutive_tools","status":"fail","message":"Missing expected data: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Retry your request with the ID or ARN of an inference profile that contains this model.","duration_ms":6000},
+    {"name":"skill_installation","status":"pass","message":"Skill installed and verified: lulu-monitor","duration_ms":2000},
+    {"name":"muse_extension","status":"pass","message":"Muse extension loaded (response: Invocation of model ID meta.llama3-3-70b-instruct-v1:0 with on-demand throughput isn’t supported. Re...)","duration_ms":12000}
+  ]
+}

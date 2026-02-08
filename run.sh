@@ -1,6 +1,6 @@
 #!/bin/bash
 # claw-bench - Clawdbot Agent Benchmark Suite
-# https://github.com/anthropics/clawdbot
+# https://github.com/openclaw/clawdbot
 #
 # Usage:
 #   ./run.sh --local              Run against local clawdbot

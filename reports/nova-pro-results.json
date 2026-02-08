@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-02-08T06:20:06Z",
+  "model": "unknown",
+  "session": "bench-87088-1770531532",
+  "results": {
+    "total": 12,
+    "passed": 3,
+    "failed": 9,
+    "critical": 0
+  },
+  "tests": [
+    {"name":"basic_chat","status":"fail","message":"Expected 42, got: User messages cannot contain reasoning content. Please remove the reasoning content and try again.","duration_ms":7000},
+    {"name":"tool_use_response","status":"fail","message":"Response doesn't contain UUID: User messages cannot contain reasoning content. Please remove the reasoning content and try again.","duration_ms":11000},
+    {"name":"web_fetch_json","status":"fail","message":"Expected slideshow title, got: User messages cannot contain reasoning content. Please remove the reasoning content and try again.","duration_ms":5000},
+    {"name":"web_fetch_html","status":"fail","message":"Didn't understand content: User messages cannot contain reasoning content. Please remove the reasoning content and try again.","duration_ms":4000},
+    {"name":"data_extraction","status":"fail","message":"Not a valid IP: User messages cannot contain reasoning content. Please remove the reasoning content and try again.","duration_ms":6000},
+    {"name":"reasoning","status":"fail","message":"Expected 23, got: User messages cannot contain reasoning content. Please remove the reasoning content and try again.","duration_ms":4000},
+    {"name":"instruction_following","status":"fail","message":"Did not follow instructions: User messages cannot contain reasoning content. Please remove the reasoning content and try again.","duration_ms":5000},
+    {"name":"reasoning_tags","status":"fail","message":"Wrong answer: User messages cannot contain reasoning content. Please remove the reasoning content and try again.","duration_ms":5000},
+    {"name":"error_handling","status":"pass","message":"Graceful error handling","duration_ms":4000},
+    {"name":"consecutive_tools","status":"fail","message":"Missing expected data: User messages cannot contain reasoning content. Please remove the reasoning content and try again.","duration_ms":5000},
+    {"name":"skill_installation","status":"pass","message":"Skill installed and verified: lulu-monitor","duration_ms":3000},
+    {"name":"muse_extension","status":"pass","message":"Muse extension loaded (response: User messages cannot contain reasoning content. Please remove the reasoning content and try again....)","duration_ms":13000}
+  ]
+}

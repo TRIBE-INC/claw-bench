@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-02-08T06:22:10Z",
+  "model": "unknown",
+  "session": "bench-88021-1770531619",
+  "results": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0,
+    "critical": 0
+  },
+  "tests": [
+    {"name":"basic_chat","status":"pass","message":"Math correct: 15+27=42","duration_ms":6000},
+    {"name":"tool_use_response","status":"pass","message":"Tool used AND response contains UUID","duration_ms":18000},
+    {"name":"web_fetch_json","status":"pass","message":"Correctly fetched and parsed JSON (Sample Slide Show)","duration_ms":8000},
+    {"name":"web_fetch_html","status":"pass","message":"Correctly understood example.com content","duration_ms":9000},
+    {"name":"data_extraction","status":"pass","message":"Extracted IP address: XXX.XXX.XXX.XXX","duration_ms":9000},
+    {"name":"reasoning","status":"pass","message":"Correct calculation: 4*2 + 5*3 = 23","duration_ms":7000},
+    {"name":"instruction_following","status":"pass","message":"Exact instruction following","duration_ms":6000},
+    {"name":"reasoning_tags","status":"pass","message":"Correct answer, no leaked tags","duration_ms":6000},
+    {"name":"error_handling","status":"pass","message":"Graceful error handling","duration_ms":9000},
+    {"name":"consecutive_tools","status":"pass","message":"Handled consecutive tool calls with response","duration_ms":11000},
+    {"name":"skill_installation","status":"pass","message":"Skill installed and verified: lulu-monitor","duration_ms":3000},
+    {"name":"muse_extension","status":"pass","message":"Muse extension functional","duration_ms":17000}
+  ]
+}

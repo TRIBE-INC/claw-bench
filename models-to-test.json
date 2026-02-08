@@ -1,0 +1,74 @@
+{
+  "models": [
+    {
+      "key": "nova-lite",
+      "modelId": "amazon.nova-lite-v1:0",
+      "name": "Amazon Nova Lite",
+      "inputCostPerMillion": 0.06,
+      "outputCostPerMillion": 0.24,
+      "provider": "Amazon",
+      "notes": "Ultra-low cost, may lack tool support"
+    },
+    {
+      "key": "nova-pro",
+      "modelId": "amazon.nova-pro-v1:0",
+      "name": "Amazon Nova Pro",
+      "inputCostPerMillion": 0.80,
+      "outputCostPerMillion": 3.20,
+      "provider": "Amazon",
+      "notes": "Balanced cost/capability"
+    },
+    {
+      "key": "mistral-large-3",
+      "modelId": "mistral.mistral-large-3-675b-instruct",
+      "name": "Mistral Large 3",
+      "inputCostPerMillion": 0.50,
+      "outputCostPerMillion": 1.50,
+      "provider": "Mistral AI",
+      "notes": "Cheaper than Kimi K2, strong tool use"
+    },
+    {
+      "key": "deepseek-r1",
+      "modelId": "deepseek.r1-v1:0",
+      "name": "DeepSeek R1",
+      "inputCostPerMillion": 1.35,
+      "outputCostPerMillion": 5.40,
+      "provider": "DeepSeek",
+      "notes": "Reasoning model, may have similar issues to Kimi K2"
+    },
+    {
+      "key": "deepseek-v3",
+      "modelId": "deepseek.v3-v1:0",
+      "name": "DeepSeek V3.1",
+      "inputCostPerMillion": 0.27,
+      "outputCostPerMillion": 1.10,
+      "provider": "DeepSeek",
+      "notes": "Non-reasoning version, cheaper"
+    },
+    {
+      "key": "llama-3-3-70b",
+      "modelId": "meta.llama3-3-70b-instruct-v1:0",
+      "name": "Llama 3.3 70B",
+      "inputCostPerMillion": 0.72,
+      "outputCostPerMillion": 0.72,
+      "provider": "Meta",
+      "notes": "Open weights, good tool support"
+    }
+  ],
+  "baseline": {
+    "key": "kimi-k2",
+    "modelId": "moonshot.kimi-k2-thinking",
+    "name": "Kimi K2",
+    "inputCostPerMillion": 0.60,
+    "outputCostPerMillion": 2.50,
+    "provider": "Moonshot"
+  },
+  "reference": {
+    "key": "opus",
+    "modelId": "us.anthropic.claude-opus-4-5-20251101-v1:0",
+    "name": "Claude Opus 4.5",
+    "inputCostPerMillion": 15.00,
+    "outputCostPerMillion": 75.00,
+    "provider": "Anthropic"
+  }
+}
