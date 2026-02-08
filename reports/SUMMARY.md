@@ -1,7 +1,6 @@
 # Clawdbot Model Benchmark Summary
 
 **Date:** 2026-02-08
-**Bot Instance:** ubuntu@XXX.XXX.XXX.XXX
 **Test Suite:** claw-bench v1.0 (12 tests)
 
 ## Results Overview

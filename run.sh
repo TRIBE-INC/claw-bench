@@ -150,20 +150,20 @@ if [ "$CLAW_OUTPUT" = "human" ]; then
       echo -e "  ${GREEN}clawdbot: found${NC}"
       ;;
     ssh)
-      if ! ssh -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" "echo ok" >/dev/null 2>&1; then
+      if ! ssh -n -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" "echo ok" >/dev/null 2>&1; then
         echo -e "  ${RED}SSH connection failed to $CLAW_HOST${NC}"
         exit 3
       fi
       echo -e "  ${GREEN}SSH: connected to $CLAW_HOST${NC}"
 
-      if ! ssh -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" "command -v clawdbot" >/dev/null 2>&1; then
+      if ! ssh -n -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" "command -v clawdbot" >/dev/null 2>&1; then
         echo -e "  ${RED}clawdbot not found on remote host${NC}"
         exit 3
       fi
       echo -e "  ${GREEN}clawdbot: found on remote${NC}"
 
       # Get model info
-      CLAW_MODEL=$(ssh -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
+      CLAW_MODEL=$(ssh -n -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
         "jq -r '.agents.defaults.model.primary' ~/.clawdbot/clawdbot.json 2>/dev/null" || echo "unknown")
       export CLAW_MODEL
       echo -e "  ${GREEN}Model: $CLAW_MODEL${NC}"

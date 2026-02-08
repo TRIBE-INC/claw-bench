@@ -13,7 +13,7 @@
     {"name":"tool_use_response","status":"pass","message":"Tool used AND response contains UUID","duration_ms":18000},
     {"name":"web_fetch_json","status":"pass","message":"Correctly fetched and parsed JSON (Sample Slide Show)","duration_ms":8000},
     {"name":"web_fetch_html","status":"pass","message":"Correctly understood example.com content","duration_ms":9000},
-    {"name":"data_extraction","status":"pass","message":"Extracted IP address: XXX.XXX.XXX.XXX","duration_ms":9000},
+    {"name":"data_extraction","status":"pass","message":"Extracted IP address: [REDACTED]","duration_ms":9000},
     {"name":"reasoning","status":"pass","message":"Correct calculation: 4*2 + 5*3 = 23","duration_ms":7000},
     {"name":"instruction_following","status":"pass","message":"Exact instruction following","duration_ms":6000},
     {"name":"reasoning_tags","status":"pass","message":"Correct answer, no leaked tags","duration_ms":6000},

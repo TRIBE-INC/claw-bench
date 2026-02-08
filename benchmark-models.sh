@@ -13,7 +13,7 @@ REPORTS_DIR="${SCRIPT_DIR}/reports"
 MODELS_FILE="${SCRIPT_DIR}/models-to-test.json"
 
 # SSH config (override with env vars)
-: "${CLAW_HOST:=ubuntu@XXX.XXX.XXX.XXX}"
+: "${CLAW_HOST:?Error: CLAW_HOST must be set (e.g., ubuntu@your-bot-ip)}"
 : "${CLAW_SSH_KEY:=$HOME/.ssh/id_rsa}"
 CLAW_SSH_OPTS="-o StrictHostKeyChecking=no -o ConnectTimeout=10"
 

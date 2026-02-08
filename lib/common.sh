@@ -62,22 +62,25 @@ claw_init() {
 
 # Send a message to the agent and get response
 # Usage: claw_ask "Your message here"
+# Note: Uses unique session per call to avoid context accumulation issues
 claw_ask() {
   local message="$1"
   local json_result
   local result
+  # Use unique session ID per call to prevent context overflow
+  local call_session="${CLAW_SESSION}-$(date +%s%N | cut -c1-13)"
 
   case "$CLAW_MODE" in
     local)
       json_result=$(timeout "$CLAW_TIMEOUT" clawdbot agent \
-        --session-id "$CLAW_SESSION" \
+        --session-id "$call_session" \
         --message "$message" \
         --json 2>/dev/null) || json_result='{"error":"timeout"}'
       ;;
 
     ssh)
-      json_result=$(ssh -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
-        "timeout $CLAW_TIMEOUT clawdbot agent --session-id '$CLAW_SESSION' --message '$message' --json 2>/dev/null" \
+      json_result=$(ssh -n -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
+        "timeout $CLAW_TIMEOUT clawdbot agent --session-id '$call_session' --message '$message' --json 2>/dev/null" \
         2>/dev/null) || json_result='{"error":"timeout"}'
       ;;
 
@@ -124,7 +127,7 @@ claw_ask_json() {
       ;;
 
     ssh)
-      result=$(ssh -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
+      result=$(ssh -n -i "$CLAW_SSH_KEY" $CLAW_SSH_OPTS "$CLAW_HOST" \
         "timeout $CLAW_TIMEOUT clawdbot agent --session-id '$CLAW_SESSION' --message '$message' --json 2>/dev/null" \
         2>/dev/null)
       ;;

@@ -2,6 +2,19 @@
 
 A comprehensive benchmark suite for testing [clawdbot](https://github.com/openclaw/clawdbot) agents.
 
+## Benchmark Scores (2026-02-08)
+
+| Model | Pass Rate | Input $/1M | Output $/1M | Notes |
+|-------|-----------|------------|-------------|-------|
+| **Mistral Large 3** | ✅ 100% (12/12) | $0.50 | $1.50 | Best overall |
+| Amazon Nova Lite | 33% (4/12) | $0.06 | $0.24 | Ultra-cheap |
+| Amazon Nova Pro | 25% (3/12) | $0.80 | $3.20 | Balanced |
+| DeepSeek R1 | 25% (3/12) | $1.35 | $5.40 | Reasoning model |
+| DeepSeek V3.1 | 25% (3/12) | $0.27 | $1.10 | Cheaper variant |
+| Llama 3.3 70B | 25% (3/12) | $0.72 | $0.72 | Open weights |
+
+See [reports/](./reports/) for detailed test breakdowns.
+
 ## What It Tests
 
 | Category | Tests | Description |

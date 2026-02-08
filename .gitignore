@@ -1,0 +1,12 @@
+# Local configuration (may contain IPs, keys)
+config.sh
+
+# Editor files
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+/tmp/
+*.tmp
