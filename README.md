@@ -7,6 +7,7 @@ A comprehensive benchmark suite for testing [clawdbot](https://github.com/opencl
 | Model | Pass Rate | Input $/1M | Output $/1M | Notes |
 |-------|-----------|------------|-------------|-------|
 | **Mistral Large 3** | ✅ 100% (12/12) | $0.50 | $1.50 | Best overall |
+| Kimi K2 | 40% (5/12) | $0.60 | $2.50 | Tool use issues |
 | Amazon Nova Lite | 33% (4/12) | $0.06 | $0.24 | Ultra-cheap |
 | Amazon Nova Pro | 25% (3/12) | $0.80 | $3.20 | Balanced |
 | DeepSeek R1 | 25% (3/12) | $1.35 | $5.40 | Reasoning model |
