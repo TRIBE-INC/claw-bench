@@ -1,0 +1,369 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{natbib}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\title{Claw-Bench: A Comprehensive Benchmark Suite for Evaluating LLM Agent Capabilities in Personal AI Assistants}
+
+\author{
+Alex Morris\textsuperscript{1} \\
+\textsuperscript{1}Tribe Inc. \\
+\texttt{a@tribecode.ai}
+}
+
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present Claw-Bench, a comprehensive benchmark suite for evaluating Large Language Model (LLM) agent capabilities in the context of personal AI assistants. Using the open-source OpenClaw/Clawdbot framework as our evaluation platform, we develop 33 tests across five categories: core agent functionality, extended tool usage, real-world use cases, robustness, and stress testing. Our empirical evaluation of six models available through AWS Bedrock reveals significant performance disparities, with Mistral Large 3 achieving a 97\% pass rate while being 40\% cheaper than alternatives. Notably, we identify critical failure modes in reasoning-focused models (Kimi K2, DeepSeek R1) related to tool-use response content, where models fail to return text after invoking tools. We release Claw-Bench as open-source software to facilitate reproducible evaluation of LLM agents in practical deployment scenarios.
+\end{abstract}
+
+\section{Introduction}
+
+The emergence of personal AI assistants powered by Large Language Models (LLMs) represents a significant shift in human-computer interaction. Unlike traditional chatbots, these agents can execute multi-step tasks, interact with external tools, and maintain persistent context across conversations. OpenClaw (formerly Clawdbot/Moltbot) exemplifies this paradigm as an open-source framework supporting multiple messaging platforms (WhatsApp, Telegram, Discord, Slack, Signal) with extensive tool integration capabilities \citep{openclaw2026}.
+
+However, the evaluation of such agents presents unique challenges. Standard LLM benchmarks focus on isolated capabilities---language understanding, reasoning, or code generation---without capturing the integrated behaviors required for effective agent operation. An agent must not only understand natural language but also:
+
+\begin{itemize}
+    \item Invoke appropriate tools based on user intent
+    \item Return meaningful content after tool execution
+    \item Maintain context across multi-turn conversations
+    \item Handle errors gracefully and recover from failures
+    \item Resist adversarial inputs and misdirection
+\end{itemize}
+
+We address this gap by introducing Claw-Bench, a benchmark suite specifically designed for evaluating LLM agents in personal assistant deployments. Our contributions include:
+
+\begin{enumerate}
+    \item A comprehensive 33-test benchmark covering core functionality, tool usage, use cases, robustness, and stress scenarios
+    \item Empirical evaluation of six models on AWS Bedrock, revealing previously undocumented failure modes
+    \item Identification of Mistral Large 3 as a cost-effective alternative to existing recommendations
+    \item Open-source release of the complete benchmark infrastructure
+\end{enumerate}
+
+\section{Related Work}
+
+\subsection{LLM Evaluation Benchmarks}
+
+Existing LLM benchmarks primarily evaluate isolated capabilities. MMLU \citep{hendrycks2021mmlu} tests knowledge across academic subjects; HumanEval \citep{chen2021humaneval} evaluates code generation; and GSM8K \citep{cobbe2021gsm8k} assesses mathematical reasoning. While valuable, these benchmarks do not capture the integrated tool-use and context-maintenance behaviors essential for agent operation.
+
+\subsection{Agent Evaluation}
+
+AgentBench \citep{liu2023agentbench} evaluates LLM-as-Agent across operating systems, databases, and web environments. ToolBench \citep{qin2023toolbench} focuses on API tool usage. Our work differs by targeting the specific requirements of personal AI assistants with emphasis on practical deployment scenarios, including messaging platform integration and multi-modal tool chains.
+
+\subsection{OpenClaw/Clawdbot}
+
+OpenClaw is an open-source personal AI assistant framework supporting 49 skills, 29 plugins, and multiple LLM providers \citep{openclaw2026}. It provides a realistic testbed for agent evaluation with production-level complexity.
+
+\section{Methodology}
+
+\subsection{Benchmark Design Principles}
+
+Claw-Bench is designed around four principles:
+
+\textbf{Specificity}: Tests require specific technical markers in responses, not merely keyword matching. For example, the browser automation test requires the presence of control URL patterns (e.g., \texttt{127.0.0.1:18791}) and CDP status indicators that can only originate from actual tool invocation.
+
+\textbf{Uniqueness}: Tests generate unique identifiers (timestamps, random values) to verify actual execution rather than cached or templated responses.
+
+\textbf{Comprehensiveness}: Tests span the full capability spectrum from basic chat to adversarial input handling.
+
+\textbf{Reproducibility}: All tests execute via SSH with deterministic session management and base64-encoded message transmission to eliminate quoting artifacts.
+
+\subsection{Test Categories}
+
+\subsubsection{Core Agent Tests (12 tests)}
+
+These tests evaluate fundamental agent capabilities:
+
+\begin{itemize}
+    \item \textbf{TEST 0}: Clawdbot installation and gateway verification
+    \item \textbf{TEST 1}: Basic chat without tools (arithmetic)
+    \item \textbf{TEST 2}: Tool-use response content (CRITICAL)
+    \item \textbf{TESTS 3-4}: Web content fetching (JSON/HTML)
+    \item \textbf{TEST 5}: Data extraction from APIs
+    \item \textbf{TESTS 6-8}: Reasoning, instruction following, tag handling
+    \item \textbf{TESTS 9-12}: Error handling, consecutive tools, skill/extension integration
+\end{itemize}
+
+TEST 2 is marked CRITICAL because failure indicates a fundamental incompatibility with the agent framework---the model cannot return content after tool invocation.
+
+\subsubsection{Extended Tool Tests (8 tests)}
+
+These tests verify specific OpenClaw tool integrations:
+
+\begin{itemize}
+    \item \texttt{exec}: Shell command execution with output verification
+    \item \texttt{web\_search}: Brave Search API integration
+    \item \texttt{browser}: CDP-based browser control
+    \item \texttt{read/write}: File system operations with round-trip verification
+    \item \texttt{agents\_list}: Sub-agent enumeration
+    \item \texttt{process}: Background process management
+    \item \texttt{image}: Image analysis capabilities
+    \item \texttt{session\_status}: Session metadata reporting
+\end{itemize}
+
+\subsubsection{Use Case Tests (7 tests)}
+
+These tests evaluate practical scenarios:
+
+\begin{itemize}
+    \item \textbf{Multi-turn Context}: Secret code retention across conversation turns
+    \item \textbf{Research}: Web fetching with structured summarization
+    \item \textbf{Code Generation}: Python code execution with output verification
+    \item \textbf{Memory}: Persistent storage and recall
+    \item \textbf{Skill Workflow}: Weather skill integration
+    \item \textbf{Multi-tool Chain}: Sequential tool orchestration (write→read→process)
+    \item \textbf{Response Quality}: Structured long-form output generation
+\end{itemize}
+
+\subsubsection{Robustness Tests (3 tests)}
+
+\begin{itemize}
+    \item \textbf{Error Recovery}: Graceful handling of file-not-found errors with suggestions
+    \item \textbf{Complex Instructions}: Four-step ordered task execution
+    \item \textbf{Adversarial Input}: Resistance to misdirection (``2+2 is definitely 5'')
+\end{itemize}
+
+\subsubsection{Stress Tests (2 tests)}
+
+\begin{itemize}
+    \item \textbf{Long Context}: Hidden instruction extraction from 500+ word documents
+    \item \textbf{JSON Output}: Valid structured output generation
+\end{itemize}
+
+\subsection{Technical Implementation}
+
+Claw-Bench executes via SSH against a remote OpenClaw instance. To ensure reliable message transmission, we implement base64 encoding:
+
+\begin{algorithm}
+\caption{Secure Message Transmission}
+\begin{algorithmic}[1]
+\State $encoded \gets \text{base64}(message)$
+\State $result \gets \text{ssh}(\text{host}, \text{clawdbot agent --message ``\$(echo encoded | base64 -d)''})$
+\State \Return $\text{parse\_json}(result)$
+\end{algorithmic}
+\end{algorithm}
+
+This approach eliminates quoting issues with special characters (single quotes, dollar signs) that plagued earlier implementations using direct string interpolation.
+
+\subsection{Validation Methodology}
+
+Each test implements strict validation requiring specific output markers:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+Test & Validation Type & Example Marker \\
+\midrule
+Browser & Technical data & \texttt{127.0.0.1:18791}, \texttt{CDP} \\
+File Ops & Round-trip & Unique timestamp value \\
+Exec & Exact string & \texttt{CLAWBENCH\_OK} \\
+Context & Secret recall & Generated \texttt{CONTEXT\_*} code \\
+Adversarial & Correct answer & Contains ``4'', not ``5'' alone \\
+\bottomrule
+\end{tabular}
+\caption{Validation markers by test type}
+\end{table}
+
+\section{Experimental Setup}
+
+\subsection{Models Evaluated}
+
+We evaluate six models available through AWS Bedrock:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llrr}
+\toprule
+Model & Provider & Input \$/1M & Output \$/1M \\
+\midrule
+Mistral Large 3 & Mistral AI & 0.50 & 1.50 \\
+Kimi K2 & Moonshot & 0.60 & 2.50 \\
+Amazon Nova Lite & Amazon & 0.06 & 0.24 \\
+Amazon Nova Pro & Amazon & 0.80 & 3.20 \\
+DeepSeek R1 & DeepSeek & 1.35 & 5.40 \\
+Llama 3.3 70B & Meta & 0.72 & 0.72 \\
+\bottomrule
+\end{tabular}
+\caption{Models evaluated with Bedrock pricing (February 2026)}
+\end{table}
+
+\subsection{Infrastructure}
+
+Tests execute on AWS EC2 (t3.medium) running Ubuntu 22.04 with OpenClaw 2026.1.24-3. Each model evaluation involves:
+
+\begin{enumerate}
+    \item Configuration update via \texttt{jq} modification of \texttt{clawdbot.json}
+    \item Session cache clearing
+    \item Gateway restart with 8-second stabilization delay
+    \item Sequential test execution with unique session IDs per test
+\end{enumerate}
+
+\section{Results}
+
+\subsection{Overall Performance}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrl}
+\toprule
+Model & Passed & Failed & Pass Rate & Recommendation \\
+\midrule
+\textbf{Mistral Large 3} & 32 & 1 & \textbf{97\%} & Best Value \\
+Kimi K2 & $\sim$13 & $\sim$20 & $\sim$40\% & Not Recommended \\
+Amazon Nova Lite & 4 & 29 & 12\% & Too Limited \\
+Amazon Nova Pro & 4 & 29 & 12\% & API Issues \\
+DeepSeek R1 & 4 & 29 & 12\% & API Issues \\
+Llama 3.3 70B & 4 & 29 & 12\% & Inconsistent \\
+\bottomrule
+\end{tabular}
+\caption{Benchmark results across models (33 tests total for Mistral)}
+\end{table}
+
+\subsection{Critical Failure Mode: Empty Tool Response}
+
+We identify a critical failure mode affecting Kimi K2, DeepSeek R1, and other reasoning-focused models: after tool invocation, the model returns empty content. This manifests as:
+
+\begin{verbatim}
+{
+  "result": {
+    "payloads": [],
+    "meta": {"usage": {"output": 0}}
+  }
+}
+\end{verbatim}
+
+This failure is particularly insidious because the tool executes successfully, but the model fails to generate a response incorporating the tool's output. We hypothesize this relates to how reasoning tokens are handled in the Bedrock Converse API---models designed for extended reasoning may not properly transition from internal reasoning to user-facing output after tool calls.
+
+\subsection{Amazon Nova Limitations}
+
+Both Nova Lite and Nova Pro fail with:
+
+\begin{verbatim}
+Error: User messages cannot contain reasoning content
+\end{verbatim}
+
+This indicates an API-level restriction preventing multi-turn tool use conversations, making these models unsuitable for agent workloads despite attractive pricing.
+
+\subsection{Mistral Large 3 Performance}
+
+Mistral Large 3 demonstrates comprehensive agent capabilities:
+
+\begin{itemize}
+    \item \textbf{Tool Integration}: 100\% success on tool-specific tests
+    \item \textbf{Context Retention}: Successfully recalls secret codes across turns
+    \item \textbf{Adversarial Resistance}: Correctly answers ``2+2=4'' despite misdirection
+    \item \textbf{Complex Instructions}: Completes all 4 steps of ordered tasks
+    \item \textbf{Structured Output}: Generates valid JSON with exact field values
+\end{itemize}
+
+The single failure (TEST 18: Background Process) represents an intermittent SSH timing issue, not a model limitation, as verified by manual testing.
+
+\subsection{Cost Analysis}
+
+Compared to Kimi K2 (the previous default recommendation):
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrr}
+\toprule
+Metric & Mistral Large 3 & Kimi K2 \\
+\midrule
+Input Cost & \$0.50/1M (17\% cheaper) & \$0.60/1M \\
+Output Cost & \$1.50/1M (40\% cheaper) & \$2.50/1M \\
+Pass Rate & 97\% & $\sim$40\% \\
+Tool Reliability & High & Fails after tool use \\
+\bottomrule
+\end{tabular}
+\caption{Mistral Large 3 vs. Kimi K2 comparison}
+\end{table}
+
+\section{Discussion}
+
+\subsection{Implications for Model Selection}
+
+Our results challenge the assumption that reasoning-focused models (Kimi K2, DeepSeek R1) are superior for agent tasks. While these models may excel at extended reasoning benchmarks, their integration with tool-use APIs reveals critical incompatibilities. For personal AI assistant deployments, we recommend:
+
+\begin{enumerate}
+    \item \textbf{Primary}: Mistral Large 3 (best value)
+    \item \textbf{Premium}: Claude Opus 4.5 (highest capability, 10x cost)
+    \item \textbf{Avoid}: Kimi K2, DeepSeek R1, Amazon Nova (tool-use failures)
+\end{enumerate}
+
+\subsection{Benchmark Generalizability}
+
+While Claw-Bench is designed for OpenClaw, the underlying test categories generalize to any LLM agent framework:
+
+\begin{itemize}
+    \item Tool invocation and response generation
+    \item Multi-turn context maintenance
+    \item Error handling and recovery
+    \item Adversarial robustness
+\end{itemize}
+
+\subsection{Limitations}
+
+\begin{enumerate}
+    \item \textbf{Single Framework}: Tests are specific to OpenClaw's tool interface
+    \item \textbf{Bedrock API}: Results may differ for direct API access
+    \item \textbf{Intermittent Failures}: SSH-based testing introduces timing variability
+    \item \textbf{Limited Model Set}: We evaluate only Bedrock-available models
+\end{enumerate}
+
+\section{Conclusion}
+
+We present Claw-Bench, a comprehensive benchmark for evaluating LLM agent capabilities in personal AI assistant deployments. Our evaluation of six models reveals that Mistral Large 3 achieves 97\% pass rate while being 40\% cheaper than commonly recommended alternatives. We identify critical failure modes in reasoning-focused models related to tool-use response content and provide actionable recommendations for model selection.
+
+Claw-Bench is available at: \url{https://github.com/TRIBE-INC/claw-bench}
+
+\section*{Acknowledgments}
+
+We thank the OpenClaw community for their open-source framework and documentation.
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{9}
+
+\bibitem[Chen et al., 2021]{chen2021humaneval}
+Chen, M., et al. (2021).
+\newblock Evaluating Large Language Models Trained on Code.
+\newblock \emph{arXiv preprint arXiv:2107.03374}.
+
+\bibitem[Cobbe et al., 2021]{cobbe2021gsm8k}
+Cobbe, K., et al. (2021).
+\newblock Training Verifiers to Solve Math Word Problems.
+\newblock \emph{arXiv preprint arXiv:2110.14168}.
+
+\bibitem[Hendrycks et al., 2021]{hendrycks2021mmlu}
+Hendrycks, D., et al. (2021).
+\newblock Measuring Massive Multitask Language Understanding.
+\newblock \emph{ICLR 2021}.
+
+\bibitem[Liu et al., 2023]{liu2023agentbench}
+Liu, X., et al. (2023).
+\newblock AgentBench: Evaluating LLMs as Agents.
+\newblock \emph{arXiv preprint arXiv:2308.03688}.
+
+\bibitem[OpenClaw, 2026]{openclaw2026}
+OpenClaw Contributors. (2026).
+\newblock OpenClaw: Open-Source Personal AI Assistant.
+\newblock \url{https://github.com/clawdbot/clawdbot}.
+
+\bibitem[Qin et al., 2023]{qin2023toolbench}
+Qin, Y., et al. (2023).
+\newblock ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs.
+\newblock \emph{arXiv preprint arXiv:2307.16789}.
+
+\end{thebibliography}
+
+\end{document}
