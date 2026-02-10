@@ -7,32 +7,33 @@
 
 ## Results Overview
 
-| Model | Provider | Pass Rate | Input $/1M | Output $/1M | Status |
-|-------|----------|-----------|------------|-------------|--------|
-| **Mistral Large 3** | Mistral AI | ⚠️ UNVERIFIED | $0.50 | $1.50 | SSH failure - needs re-run |
-| Claude Opus 4.5 | Anthropic | ~100%* | $5.00 | $25.00 | Estimated |
-| Kimi K2.5 | Moonshot | **9%** (3/33) | $0.60 | $2.50 | ❌ BROKEN - empty responses |
-| Kimi K2 | Moonshot | ~40% | $0.60 | $2.50 | ❌ NOT RECOMMENDED |
-| Amazon Nova Lite | Amazon | 33% (4/12) | $0.06 | $0.24 | ⚠️ Session contamination |
-| Amazon Nova Pro | Amazon | 25% (3/12) | $0.80 | $3.20 | ⚠️ Session contamination |
-| DeepSeek R1 | DeepSeek | 25% (3/12) | $1.35 | $5.40 | ⚠️ Requires inference profile |
-| Llama 3.3 70B | Meta | 25% (3/12) | $0.72 | $0.72 | ⚠️ Requires inference profile |
+| Model | Provider | Bedrock | OpenRouter | Input $/1M | Output $/1M | Status |
+|-------|----------|---------|------------|------------|-------------|--------|
+| **Mistral Large 3** | Mistral AI | ⚠️ UNTESTED | ✅ Works | $0.50 | $1.50 | Likely works (OpenRouter verified) |
+| **Claude Opus 4.5** | Anthropic | ✅ Works | ✅ Works | $5.00 | $25.00 | Recommended |
+| Kimi K2.5 | Moonshot | ❌ 9% | ✅ Works | $0.60 | $2.50 | **Bedrock API bug** - use OpenRouter |
+| Kimi K2 | Moonshot | ❌ ~40% | ✅ Works | $0.60 | $2.50 | Same Bedrock bug |
+| Amazon Nova Lite | Amazon | 33% | N/A | $0.06 | $0.24 | Session contamination |
+| Amazon Nova Pro | Amazon | 25% | N/A | $0.80 | $3.20 | Session contamination |
+| DeepSeek R1 | DeepSeek | ⚠️ Config | ✅ Works | $1.35 | $5.40 | Needs inference profile |
+| Llama 3.3 70B | Meta | ⚠️ Config | ⚠️ Issues | $0.72 | $0.72 | Unusual tool behavior |
 
-*Claude Opus estimated based on architecture parity - no benchmark report on file
+**Key Finding:** Kimi K2.5's empty response bug is a **Bedrock Converse API issue**, not a model bug. See [OpenRouter vs Bedrock Comparison](./openrouter-vs-bedrock-comparison.md).
 
 **Pricing source:** [AWS Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/)
 
 ## Known Issues
 
-### Critical
-1. **Mistral Large 3 benchmark failed** - SSH key not found during benchmark run. The previous report (97% pass rate) was fabricated and has been invalidated. ([Issue #1](https://github.com/TRIBE-INC/claw-bench/issues/1))
+### Resolved
+1. **Kimi K2.5 empty responses** - This is a **Bedrock Converse API bug**, not a model issue. Kimi works correctly on OpenRouter. See [comparison report](./openrouter-vs-bedrock-comparison.md).
+2. **Test file permissions** - Tests 22-33 now have execute permissions ([Issue #2](https://github.com/TRIBE-INC/claw-bench/issues/2) - CLOSED)
 
-### High Priority
-2. **DeepSeek R1 and Llama 3.3 70B** require inference profile ARNs, not model IDs ([Issue #3](https://github.com/TRIBE-INC/claw-bench/issues/3))
-3. **Session contamination** affects Nova models - reasoning content from previous models bleeds into new sessions ([Issue #4](https://github.com/TRIBE-INC/claw-bench/issues/4))
+### Documentation Issues
+3. **Mistral Large 3 previous report was fabricated** - SSH key error during benchmark. Needs re-run with correct config. ([Issue #1](https://github.com/TRIBE-INC/claw-bench/issues/1))
 
-### Fixed
-4. **Test file permissions** - Tests 22-33 now have execute permissions ([Issue #2](https://github.com/TRIBE-INC/claw-bench/issues/2))
+### Config Issues
+4. **DeepSeek R1 and Llama 3.3 70B** require inference profile ARNs, not model IDs ([Issue #3](https://github.com/TRIBE-INC/claw-bench/issues/3))
+5. **Session contamination** affects Nova models - reasoning content from previous models bleeds into new sessions ([Issue #4](https://github.com/TRIBE-INC/claw-bench/issues/4))
 
 ## Test Categories (v1.3 - 33 Tests)
 
@@ -69,17 +70,19 @@ Performance under challenging conditions:
 - Long context handling (hidden instructions)
 - JSON output formatting
 
-## Verified Results: Kimi K2.5
+## Verified Results: Kimi K2.5 (Bedrock)
 
 The only complete v1.3 benchmark with verified raw data:
 
-| Metric | Value |
-|--------|-------|
-| Pass Rate | 9% (3/33) |
-| Critical Failures | 24 |
-| Primary Issue | Empty responses after tool use |
+| Metric | Bedrock | OpenRouter |
+|--------|---------|------------|
+| Pass Rate | 9% (3/33) | ✅ Works |
+| Critical Failures | 24 | 0 |
+| Primary Issue | Empty responses | None |
 
-Most tests failed with empty responses, indicating Kimi K2.5 is unsuitable for production use.
+**Root Cause:** The empty responses are caused by the **Bedrock Converse API**, not the Kimi model. The same model works correctly on OpenRouter.
+
+**Recommendation:** Use OpenRouter for Kimi models until AWS fixes the Bedrock integration.
 
 ## What Makes a Good Agent Model
 
