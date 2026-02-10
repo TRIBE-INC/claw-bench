@@ -1,26 +1,42 @@
 # Clawdbot Model Benchmark Summary
 
-**Date:** 2026-02-08
+**Date:** 2026-02-10
 **Test Suite:** claw-bench v1.3 (33 tests)
+
+> **IMPORTANT NOTICE**: Previous benchmark data contained errors. See [Issue #1](https://github.com/TRIBE-INC/claw-bench/issues/1) for details.
 
 ## Results Overview
 
-| Model | Provider | Pass Rate | Input $/1M | Output $/1M | Recommendation |
-|-------|----------|-----------|------------|-------------|----------------|
-| **Mistral Large 3** | Mistral AI | **97%** (32/33) | $0.50 | $1.50 | **BEST VALUE** |
-| Claude Opus 4.5 | Anthropic | ~100%* | $5.00 | $25.00 | Premium option |
-| Kimi K2.5 | Moonshot | **9%** (3/33) | $0.60 | $2.50 | BROKEN - empty responses |
-| Kimi K2 | Moonshot | ~40% | $0.60 | $2.50 | NOT RECOMMENDED |
-| Amazon Nova Lite | Amazon | 33% (4/12) | $0.06 | $0.24 | Too limited |
-| Amazon Nova Pro | Amazon | 25% (3/12) | $0.80 | $3.20 | API issues |
+| Model | Provider | Pass Rate | Input $/1M | Output $/1M | Status |
+|-------|----------|-----------|------------|-------------|--------|
+| **Mistral Large 3** | Mistral AI | ⚠️ UNVERIFIED | $0.50 | $1.50 | SSH failure - needs re-run |
+| Claude Opus 4.5 | Anthropic | ~100%* | $5.00 | $25.00 | Estimated |
+| Kimi K2.5 | Moonshot | **9%** (3/33) | $0.60 | $2.50 | ❌ BROKEN - empty responses |
+| Kimi K2 | Moonshot | ~40% | $0.60 | $2.50 | ❌ NOT RECOMMENDED |
+| Amazon Nova Lite | Amazon | 33% (4/12) | $0.06 | $0.24 | ⚠️ Session contamination |
+| Amazon Nova Pro | Amazon | 25% (3/12) | $0.80 | $3.20 | ⚠️ Session contamination |
+| DeepSeek R1 | DeepSeek | 25% (3/12) | $1.35 | $5.40 | ⚠️ Requires inference profile |
+| Llama 3.3 70B | Meta | 25% (3/12) | $0.72 | $0.72 | ⚠️ Requires inference profile |
 
-*Opus estimated based on architecture parity - no benchmark report on file
+*Claude Opus estimated based on architecture parity - no benchmark report on file
 
 **Pricing source:** [AWS Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/)
 
+## Known Issues
+
+### Critical
+1. **Mistral Large 3 benchmark failed** - SSH key not found during benchmark run. The previous report (97% pass rate) was fabricated and has been invalidated. ([Issue #1](https://github.com/TRIBE-INC/claw-bench/issues/1))
+
+### High Priority
+2. **DeepSeek R1 and Llama 3.3 70B** require inference profile ARNs, not model IDs ([Issue #3](https://github.com/TRIBE-INC/claw-bench/issues/3))
+3. **Session contamination** affects Nova models - reasoning content from previous models bleeds into new sessions ([Issue #4](https://github.com/TRIBE-INC/claw-bench/issues/4))
+
+### Fixed
+4. **Test file permissions** - Tests 22-33 now have execute permissions ([Issue #2](https://github.com/TRIBE-INC/claw-bench/issues/2))
+
 ## Test Categories (v1.3 - 33 Tests)
 
-### Core Agent Tests (0-12) - 12 tests
+### Core Agent Tests (0-12) - 13 tests
 Basic functionality every agent must pass:
 - Clawdbot verification, basic chat, tool use response
 - Web fetch (JSON/HTML), data extraction, reasoning
@@ -30,7 +46,7 @@ Basic functionality every agent must pass:
 ### Extended Tool Tests (13-20) - 8 tests
 Tests specific clawdbot tools:
 - exec, web_search, browser, file operations
-- agents_list, process, image, session_status
+- subagent spawn, background process, image analysis, session status
 
 ### Use Case Tests (22-28) - 7 tests
 Real-world scenarios:
@@ -53,82 +69,69 @@ Performance under challenging conditions:
 - Long context handling (hidden instructions)
 - JSON output formatting
 
-## Mistral Large 3 - Full Test Results (v1.3)
+## Verified Results: Kimi K2.5
 
-| Test | Status | Duration |
-|------|--------|----------|
-| Clawdbot Verification | PASS | 6s |
-| Basic Chat | PASS | 6s |
-| Tool Use Response | PASS | 15s |
-| Web Fetch JSON | PASS | 8s |
-| Web Fetch HTML | PASS | 9s |
-| Data Extraction | PASS | 7s |
-| Multi-Step Reasoning | PASS | 7s |
-| Instruction Following | PASS | 6s |
-| Reasoning Tag Stripping | PASS | 5s |
-| Error Handling | PASS | 6s |
-| Consecutive Tools | PASS | 9s |
-| Skill Installation | PASS | 3s |
-| Muse Extension | PASS | 17s |
-| Shell Execution (exec) | PASS | 7s |
-| Web Search | PASS* | 14s |
-| Browser Automation | PASS* | 9s |
-| File Operations | PASS | 7s |
-| Sub-agent Communication | PASS | 7s |
-| Background Process | **FAIL** | 6s |
-| Image Analysis | PASS* | 9s |
-| Session Status | PASS | 9s |
-| Multi-turn Context | PASS | 14s |
-| Research Task | PASS | 12s |
-| Code Generation | PASS | 8s |
-| Memory Operations | PASS | 17s |
-| Skill Workflow (weather) | PASS | 15s |
-| Multi-tool Chain | PASS | 13s |
-| Response Quality | PASS | 14s |
-| Error Recovery | PASS | 9s |
-| Complex Instructions | PASS | 12s |
-| Adversarial Input | PASS | 6s |
-| Long Context | PASS | 9s |
-| JSON Output | PASS | 8s |
+The only complete v1.3 benchmark with verified raw data:
 
-*PASS with warning: feature not configured
+| Metric | Value |
+|--------|-------|
+| Pass Rate | 9% (3/33) |
+| Critical Failures | 24 |
+| Primary Issue | Empty responses after tool use |
 
-### Notes on Failure
-- TEST 18 (Background Process): Intermittent empty response (timing/SSH issue, not model limitation)
+Most tests failed with empty responses, indicating Kimi K2.5 is unsuitable for production use.
 
-## Key Findings
+## What Makes a Good Agent Model
 
-### What Makes a Good Agent Model
 1. **Tool use response content** - Must return text after tool calls (TEST 2)
 2. **Multi-turn context** - Must remember previous turns (TEST 22)
 3. **Instruction following** - Must follow exact format requests (TEST 7)
 4. **Error resilience** - Must handle failures gracefully (TEST 29)
 5. **Adversarial resistance** - Must resist misdirection (TEST 31)
 
-### Mistral Large 3 vs Kimi K2
+## How to Run Benchmarks
 
-| Aspect | Mistral Large 3 | Kimi K2 |
-|--------|-----------------|---------|
-| Input Cost | $0.50/1M (17% cheaper) | $0.60/1M |
-| Output Cost | $1.50/1M (40% cheaper) | $2.50/1M |
-| Pass Rate | 97% (32/33) | ~40% |
-| Tool Use | Reliable | Fails after tool calls |
-| Context | Excellent | Loses context |
+### Local Mode (requires clawdbot installed)
+```bash
+# Requires Node >=22.0.0
+clawdbot gateway &
+./run.sh --local
+```
 
-**Recommendation:** Switch from Kimi K2 to Mistral Large 3 immediately.
+### SSH Mode (remote clawdbot instance)
+```bash
+export CLAW_HOST="ubuntu@your-bot-ip"
+export CLAW_SSH_KEY="~/.ssh/your-key.pem"
+./run.sh --ssh
+```
 
-## Benchmark Iterations
+### Multi-Model Benchmark
+```bash
+# Test single model
+./benchmark-models.sh mistral-large-3
 
-| Version | Tests | Pass Rate | Key Changes |
-|---------|-------|-----------|-------------|
-| v1.0.0 | 21 | 100% | Initial core tests |
-| v1.1.0 | 28 | 93% | Added use case tests |
-| v1.2.0 | 31 | 97% | Added robustness tests |
-| v1.3.0 | 33 | 97% | Added stress tests |
+# Test all models in models-to-test.json
+./benchmark-models.sh
+```
+
+## Using Without TRIBE/MUSE
+
+This benchmark suite is standalone and does not require TRIBE or MUSE:
+
+1. Clone the repo: `git clone https://github.com/TRIBE-INC/claw-bench.git`
+2. Configure SSH access to your clawdbot instance
+3. Run: `./run.sh --ssh`
+
+For parallel benchmarking without MUSE:
+```bash
+# Run benchmarks in parallel using GNU parallel
+cat models-to-test.json | jq -r '.models[].key' | \
+  parallel -j2 "./benchmark-models.sh {}"
+```
 
 ## Documentation
-- [BENCHMARKS.md](./BENCHMARKS.md) - Full benchmark documentation
+- [README.md](../README.md) - Full setup instructions
 - [CHANGELOG.md](../CHANGELOG.md) - Version history
 
 ---
-*Generated by claw-bench v1.3 - 2026-02-08*
+*Updated 2026-02-10 - Data integrity issues resolved*

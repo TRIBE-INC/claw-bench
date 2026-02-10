@@ -2,19 +2,21 @@
 
 A comprehensive benchmark suite for testing [clawdbot](https://github.com/openclaw/clawdbot) agents.
 
-## Benchmark Scores (2026-02-09)
+## Benchmark Scores (2026-02-10)
 
-| Model | Pass Rate | Input $/1M | Output $/1M | Notes | Verified |
-|-------|-----------|------------|-------------|-------|----------|
-| **Mistral Large 3** | ✅ 97% (32/33) | $0.50 | $1.50 | **BEST VALUE** - 1 intermittent fail | ✅ |
-| **Claude Opus 4.5** | ~100%* | $5.00 | $25.00 | Premium tier | ⚠️ estimated |
-| Kimi K2.5 | ❌ 9% (3/33) | $0.60 | $2.50 | Empty responses after tool calls | ✅ |
-| Kimi K2 (Thinking) | ❌ ~40% | $0.60 | $2.50 | Same empty response bug | ⚠️ no report |
-| Amazon Nova Lite | 33% (4/12) | $0.06 | $0.24 | Ultra-cheap but unreliable | ✅ |
-| Amazon Nova Pro | 25% (3/12) | $0.80 | $3.20 | Balanced | ✅ |
-| DeepSeek R1 | 25% (3/12) | $1.35 | $5.40 | Reasoning model | ✅ |
-| DeepSeek V3.1 | 25% (3/12) | $0.27 | $1.10 | Cheaper variant | ✅ |
-| Llama 3.3 70B | 25% (3/12) | $0.72 | $0.72 | Open weights | ✅ |
+> **IMPORTANT**: Previous Mistral Large 3 data was found to be fabricated. See [reports/SUMMARY.md](./reports/SUMMARY.md) for details.
+
+| Model | Pass Rate | Input $/1M | Output $/1M | Notes | Status |
+|-------|-----------|------------|-------------|-------|--------|
+| **Mistral Large 3** | ⚠️ UNKNOWN | $0.50 | $1.50 | SSH failure - needs re-run | ❌ Invalid |
+| **Claude Opus 4.5** | ~100%* | $5.00 | $25.00 | Premium tier | ⚠️ Estimated |
+| Kimi K2.5 | ❌ 9% (3/33) | $0.60 | $2.50 | Empty responses after tool calls | ✅ Verified |
+| Kimi K2 (Thinking) | ❌ ~40% | $0.60 | $2.50 | Same empty response bug | ⚠️ No report |
+| Amazon Nova Lite | 33% (4/12) | $0.06 | $0.24 | Session contamination issues | ⚠️ Partial |
+| Amazon Nova Pro | 25% (3/12) | $0.80 | $3.20 | Session contamination issues | ⚠️ Partial |
+| DeepSeek R1 | 25% (3/12) | $1.35 | $5.40 | Requires inference profile | ⚠️ Config error |
+| DeepSeek V3.1 | 25% (3/12) | $0.27 | $1.10 | Cheaper variant | ⚠️ Partial |
+| Llama 3.3 70B | 25% (3/12) | $0.72 | $0.72 | Requires inference profile | ⚠️ Config error |
 
 *Claude Opus 4.5 estimated based on architecture parity - no benchmark report on file.
 
