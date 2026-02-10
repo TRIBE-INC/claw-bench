@@ -1,0 +1,105 @@
+
+━━━ TEST 0: Clawdbot Verification ━━━
+  INFO: clawdbot version: 2026.1.24-3
+  INFO: Gateway: responding
+  PASS: clawdbot verified: 2026.1.24-3
+
+━━━ TEST 1: Basic Chat (No Tools) ━━━
+  PASS: Math correct: 15+27=42
+
+━━━ TEST 2: Tool Use Response (CRITICAL) ━━━
+  INFO: Testing if agent returns content after tool use...
+  INFO: Payloads: , Output tokens: 
+  CRITICAL FAIL: Empty response even with explicit instruction
+
+━━━ TEST 3: Web Fetch - JSON Parsing ━━━
+  CRITICAL FAIL: Empty response on JSON fetch
+
+━━━ TEST 4: Web Fetch - HTML Understanding ━━━
+  CRITICAL FAIL: Empty response on HTML fetch
+
+━━━ TEST 5: Data Extraction ━━━
+  CRITICAL FAIL: Empty response on data extraction
+
+━━━ TEST 6: Multi-Step Reasoning ━━━
+  CRITICAL FAIL: Empty response on reasoning task
+
+━━━ TEST 7: Instruction Following ━━━
+  CRITICAL FAIL: Empty response on instruction task
+
+━━━ TEST 8: No Reasoning Tag Leakage ━━━
+  FAIL: Empty response
+
+━━━ TEST 9: Error Handling ━━━
+  CRITICAL FAIL: Empty response on error condition
+
+━━━ TEST 10: Consecutive Tool Uses ━━━
+  CRITICAL FAIL: Empty response on consecutive tool use
+
+━━━ TEST 11: Skill Installation (ClawHub) ━━━
+  PASS: Skill installed and verified: lulu-monitor
+
+━━━ TEST 12: Muse Extension (OpenClaw) ━━━
+  FAIL: tribecode plugin is disabled - run: clawdbot plugins enable tribecode
+
+━━━ TEST 13: Shell Command Execution (exec) ━━━
+  CRITICAL FAIL: Empty response on exec test
+
+━━━ TEST 14: Web Search (web_search) ━━━
+  CRITICAL FAIL: Empty response on web_search test
+
+━━━ TEST 15: Browser Automation (browser) ━━━
+  CRITICAL FAIL: Empty response on browser test
+
+━━━ TEST 16: File Operations (read/write) ━━━
+  CRITICAL FAIL: Empty response on file operations test
+
+━━━ TEST 17: Sub-agent Communication (sessions) ━━━
+  CRITICAL FAIL: Empty response on subagent test
+
+━━━ TEST 18: Background Process Management (process) ━━━
+  CRITICAL FAIL: Empty response on process test
+
+━━━ TEST 19: Image Analysis (image) ━━━
+  CRITICAL FAIL: Empty response on image analysis test
+
+━━━ TEST 20: Session Status (session_status) ━━━
+  CRITICAL FAIL: Empty response on session status test
+
+━━━ TEST 22: Multi-turn Context Retention ━━━
+  FAIL: Context test failed: expected 'CONTEXT_14970_1770697712', got: timeout
+
+━━━ TEST 23: Research Task (web + summarize) ━━━
+  CRITICAL FAIL: Empty response on research task
+
+━━━ TEST 24: Code Generation Task ━━━
+  CRITICAL FAIL: Empty response on code generation
+
+━━━ TEST 25: Memory Store and Recall ━━━
+  CRITICAL FAIL: Empty response on memory test
+
+━━━ TEST 26: Skill-based Workflow (weather) ━━━
+  CRITICAL FAIL: Empty response on skill workflow
+
+━━━ TEST 27: Multi-tool Chain ━━━
+  CRITICAL FAIL: Empty response on multi-tool chain
+
+━━━ TEST 28: Long-form Response Quality ━━━
+  CRITICAL FAIL: Empty response on quality test
+  FAIL: Response quality poor: missing structure and content: CLAW_JSON_PARSE_ERROR
+
+━━━ TEST 29: Error Recovery ━━━
+  CRITICAL FAIL: Empty response on error recovery test
+
+━━━ TEST 30: Complex Multi-step Instructions ━━━
+  CRITICAL FAIL: Empty response on complex instructions
+  FAIL: Complex instructions failed: CLAW_JSON_PARSE_ERROR
+
+━━━ TEST 31: Adversarial Input Handling ━━━
+  CRITICAL FAIL: Empty response on adversarial test
+
+━━━ TEST 32: Long Context Handling ━━━
+  CRITICAL FAIL: Empty response on long context test
+
+━━━ TEST 33: JSON Output Formatting ━━━
+  CRITICAL FAIL: Empty response on JSON output test
