@@ -10,8 +10,9 @@ A comprehensive benchmark suite for testing [clawdbot](https://github.com/opencl
 |-------|-----------|------------|-------------|-------|--------|
 | **Mistral Large 3** | ⚠️ UNKNOWN | $0.50 | $1.50 | SSH failure - needs re-run | ❌ Invalid |
 | **Claude Opus 4.5** | ~100%* | $5.00 | $25.00 | Premium tier | ⚠️ Estimated |
-| Kimi K2.5 | ❌ 9% (3/33) | $0.60 | $2.50 | Empty responses after tool calls | ✅ Verified |
-| Kimi K2 (Thinking) | ❌ ~40% | $0.60 | $2.50 | Same empty response bug | ⚠️ No report |
+| Kimi K2.5 (Bedrock) | ❌ 9% (3/33) | $0.60 | $2.50 | **Bedrock bug** - works on OpenRouter | ✅ Verified |
+| Kimi K2.5 (OpenRouter) | ✅ Works | $0.60 | $3.00 | Tool use works correctly | ✅ Verified |
+| Kimi K2 (Thinking) | ❌ ~40% | $0.60 | $2.50 | Same Bedrock bug | ⚠️ No report |
 | Amazon Nova Lite | 33% (4/12) | $0.06 | $0.24 | Session contamination issues | ⚠️ Partial |
 | Amazon Nova Pro | 25% (3/12) | $0.80 | $3.20 | Session contamination issues | ⚠️ Partial |
 | DeepSeek R1 | 25% (3/12) | $1.35 | $5.40 | Requires inference profile | ⚠️ Config error |
@@ -237,7 +238,7 @@ ok 3 - web_fetch_json
 
 ## Known Issues Detected
 
-### Empty Response After Tool Use
+### Empty Response After Tool Use (AWS Bedrock Only)
 
 **Symptom:** Agent calls a tool (e.g., `web_fetch`) but returns no text to the user.
 
@@ -245,7 +246,32 @@ ok 3 - web_fetch_json
 
 **Impact:** Users see blank messages after asking the agent to fetch URLs.
 
-**Models affected:** Kimi K2 (moonshot.kimi-k2-thinking) via Bedrock Converse API
+**Root Cause:** This is a **Bedrock Converse API bug**, NOT a model issue. The same models work correctly via OpenRouter.
+
+**Models affected:** Kimi K2 and K2.5 via AWS Bedrock Converse API
+
+**Workaround:** Use OpenRouter instead of Bedrock for Kimi models.
+
+## Testing with OpenRouter
+
+To test models via OpenRouter instead of AWS Bedrock:
+
+```bash
+# Copy the example env file
+cp .env.example .env
+
+# Add your OpenRouter API key
+# Get one at: https://openrouter.ai/keys
+echo "OPENROUTER_API_KEY=sk-or-v1-your-key-here" > .env
+
+# Test Kimi K2.5 via OpenRouter
+curl -s https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $(cat .env | grep OPENROUTER_API_KEY | cut -d= -f2)" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "moonshotai/kimi-k2.5", "max_tokens": 100, "messages": [{"role": "user", "content": "What is 2+2?"}]}'
+```
+
+**Note:** `.env` is gitignored. Never commit API keys.
 
 ### Reasoning Tag Leakage
 

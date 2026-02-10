@@ -1,5 +1,6 @@
 # Local configuration (may contain IPs, keys)
 config.sh
+.env
 
 # Editor files
 *.swp
