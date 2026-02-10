@@ -53,6 +53,15 @@
       "outputCostPerMillion": 0.72,
       "provider": "Meta",
       "notes": "Open weights, good tool support"
+    },
+    {
+      "key": "kimi-k2.5",
+      "modelId": "moonshotai.kimi-k2.5",
+      "name": "Kimi K2.5",
+      "inputCostPerMillion": 0.60,
+      "outputCostPerMillion": 2.50,
+      "provider": "Moonshot",
+      "notes": "Newer version of Kimi K2"
     }
   ],
   "baseline": {
