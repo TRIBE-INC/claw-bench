@@ -6,10 +6,10 @@
 
 ## Pricing
 
-| Metric | Cost per 1M tokens |
-|--------|-------------------|
-| Input | $0.60 |
-| Output | $2.50 |
+| Metric | Cost per 1M tokens | Source |
+|--------|-------------------|--------|
+| Input | $0.60 | [AWS Bedrock](https://aws.amazon.com/bedrock/pricing/) |
+| Output | $2.50 | [AWS Bedrock](https://aws.amazon.com/bedrock/pricing/) |
 
 ## Results Summary
 

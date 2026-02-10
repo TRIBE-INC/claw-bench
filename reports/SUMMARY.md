@@ -8,12 +8,15 @@
 | Model | Provider | Pass Rate | Input $/1M | Output $/1M | Recommendation |
 |-------|----------|-----------|------------|-------------|----------------|
 | **Mistral Large 3** | Mistral AI | **97%** (32/33) | $0.50 | $1.50 | **BEST VALUE** |
-| Claude Opus 4.5 | Anthropic | ~100%* | $15.00 | $75.00 | Premium option |
+| Claude Opus 4.5 | Anthropic | ~100%* | $5.00 | $25.00 | Premium option |
+| Kimi K2.5 | Moonshot | **9%** (3/33) | $0.60 | $2.50 | BROKEN - empty responses |
 | Kimi K2 | Moonshot | ~40% | $0.60 | $2.50 | NOT RECOMMENDED |
-| Amazon Nova Lite | Amazon | ~15% | $0.06 | $0.24 | Too limited |
-| Amazon Nova Pro | Amazon | ~12% | $0.80 | $3.20 | API issues |
+| Amazon Nova Lite | Amazon | 33% (4/12) | $0.06 | $0.24 | Too limited |
+| Amazon Nova Pro | Amazon | 25% (3/12) | $0.80 | $3.20 | API issues |
 
-*Opus estimated based on architecture parity
+*Opus estimated based on architecture parity - no benchmark report on file
+
+**Pricing source:** [AWS Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/)
 
 ## Test Categories (v1.3 - 33 Tests)
 
