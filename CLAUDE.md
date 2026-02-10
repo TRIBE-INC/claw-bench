@@ -39,10 +39,17 @@ CLAW_HOST="ubuntu@ip" CLAW_SSH_KEY="~/.ssh/key.pem" ./run.sh --ssh
 
 ## Adding New Tests
 
+**Use the `claw-bench-testing` skill** (`.claude/skills/claw-bench-testing.md`) for comprehensive guidance on:
+- Test file structure and naming conventions
+- Available helper functions and validation patterns
+- Multi-turn context testing
+- Known issues and gotchas
+
+Quick steps:
 1. Create `tests/NN_test_name.sh` (NN = sequence number)
 2. Use helper functions from `lib/common.sh`
 3. Document pass/fail criteria in file header
-4. Update README.md test table
+4. Update BENCHMARKS.md test table
 
 ## Updating the README Scores
 

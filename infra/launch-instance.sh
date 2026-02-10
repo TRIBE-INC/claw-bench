@@ -63,8 +63,9 @@ BEDROCK_REGION="__BEDROCK_REGION__"
 AWS_ACCESS_KEY_ID="__AWS_ACCESS_KEY_ID__"
 AWS_SECRET_ACCESS_KEY="__AWS_SECRET_ACCESS_KEY__"
 
-# Wait for cloud-init to complete
-cloud-init status --wait || true
+# Note: We're inside cloud-init, don't wait for it
+# Just give services a moment to settle
+sleep 5
 
 # Create benchmark marker
 mkdir -p /opt/claw-bench
@@ -72,16 +73,22 @@ echo "$INSTANCE_SECRET" > /opt/claw-bench/instance-secret
 echo "benchmark" > /opt/claw-bench/mode
 date -u +"%Y-%m-%dT%H:%M:%SZ" > /opt/claw-bench/launch-time
 
-# Configure AWS credentials for Bedrock
+# Configure AWS region (credentials come from instance profile)
 mkdir -p /home/ubuntu/.aws
-cat > /home/ubuntu/.aws/credentials << AWSEOF
+cat > /home/ubuntu/.aws/config << AWSEOF
+[default]
+region = $BEDROCK_REGION
+AWSEOF
+# Only write credentials if provided (fallback for no instance profile)
+if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
+  cat > /home/ubuntu/.aws/credentials << AWSEOF
 [default]
 aws_access_key_id = $AWS_ACCESS_KEY_ID
 aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
-region = $BEDROCK_REGION
 AWSEOF
+  chmod 600 /home/ubuntu/.aws/credentials
+fi
 chown -R ubuntu:ubuntu /home/ubuntu/.aws
-chmod 600 /home/ubuntu/.aws/credentials
 
 # Patch clawdbot config if patch script exists (fast path)
 if [ -f /opt/clawgo/patch-config.sh ]; then
@@ -91,14 +98,37 @@ if [ -f /opt/clawgo/patch-config.sh ]; then
 else
   # Legacy path: Generate minimal clawdbot.json
   mkdir -p /home/ubuntu/.clawdbot
+
+  # Create required .env file (systemd expects this)
+  cat > /home/ubuntu/.clawdbot/.env << ENVEOF
+# Clawdbot environment for benchmarking
+CLAWDBOT_MODE=benchmark
+AWS_DEFAULT_REGION=$BEDROCK_REGION
+ENVEOF
+
   cat > /home/ubuntu/.clawdbot/clawdbot.json << CLAWEOF
 {
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "lan",
+    "auth": { "token": "$INSTANCE_SECRET" }
+  },
   "models": {
     "providers": {
       "amazon-bedrock": {
-        "provider": "amazon-bedrock",
-        "region": "$BEDROCK_REGION",
-        "models": [{"id": "$MODEL_ID", "name": "benchmark-model"}]
+        "baseUrl": "https://bedrock-runtime.$BEDROCK_REGION.amazonaws.com",
+        "api": "bedrock-converse-stream",
+        "auth": "aws-sdk",
+        "models": [
+          {
+            "id": "$MODEL_ID",
+            "name": "benchmark-model",
+            "input": ["text"],
+            "contextWindow": 131072,
+            "maxTokens": 8192
+          }
+        ]
       }
     }
   },
@@ -108,11 +138,6 @@ else
         "primary": "amazon-bedrock/$MODEL_ID"
       }
     }
-  },
-  "gateway": {
-    "enabled": true,
-    "port": 18789,
-    "token": "$INSTANCE_SECRET"
   },
   "tools": {
     "web": {
@@ -170,6 +195,7 @@ AWS_CMD+=" --instance-type $BENCHMARK_INSTANCE_TYPE"
 AWS_CMD+=" --security-group-ids $CLAWGO_SECURITY_GROUP_ID"
 AWS_CMD+=" --user-data $USERDATA_B64"
 AWS_CMD+=" --metadata-options HttpTokens=required,HttpPutResponseHopLimit=1,HttpEndpoint=enabled"
+AWS_CMD+=" --iam-instance-profile Name=clawgo-relay-server"
 AWS_CMD+=" --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=claw-bench-$BENCH_ID},{Key=ManagedBy,Value=claw-bench},{Key=BenchId,Value=$BENCH_ID},{Key=Model,Value=$MODEL_ID}]'"
 
 # Add key pair if specified

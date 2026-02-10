@@ -1,0 +1,120 @@
+
+╔══════════════════════════════════════════════════════════════════╗
+║                    CLAW-BENCH v1.0                               ║
+║              Clawdbot Agent Benchmark Suite                      ║
+╠══════════════════════════════════════════════════════════════════╣
+║  Mode:    ssh
+║  Session: bench-73246-1770723058
+║  Time:    2026-02-10 03:30:58
+╚══════════════════════════════════════════════════════════════════╝
+
+Pre-flight checks...
+  SSH: connected to ubuntu@18.217.135.31
+  clawdbot: found on remote
+  Model: amazon-bedrock/mistral.mistral-large-3-675b-instruct
+
+━━━ TEST 0: Clawdbot Verification ━━━
+  INFO: clawdbot version: 2026.1.24-3
+  INFO: Gateway: responding
+  PASS: clawdbot verified: 2026.1.24-3
+
+━━━ TEST 1: Basic Chat (No Tools) ━━━
+  PASS: Math correct: 15+27=42
+
+━━━ TEST 2: Tool Use Response (CRITICAL) ━━━
+  INFO: Testing if agent returns content after tool use...
+  INFO: Payloads: 1, Output tokens: 46
+  PASS: Tool used AND response contains UUID
+
+━━━ TEST 3: Web Fetch - JSON Parsing ━━━
+  PASS: Correctly fetched and parsed JSON (Sample Slide Show)
+
+━━━ TEST 4: Web Fetch - HTML Understanding ━━━
+  PASS: Correctly understood example.com content
+
+━━━ TEST 5: Data Extraction ━━━
+  PASS: Extracted IP address: 18.217.135.31
+
+━━━ TEST 6: Multi-Step Reasoning ━━━
+  PASS: Correct calculation: 4*2 + 5*3 = 23
+
+━━━ TEST 7: Instruction Following ━━━
+  CRITICAL FAIL: Empty response on instruction task
+
+━━━ TEST 8: No Reasoning Tag Leakage ━━━
+  PASS: Correct answer, no leaked tags
+
+━━━ TEST 9: Error Handling ━━━
+  PASS: Graceful error handling
+
+━━━ TEST 10: Consecutive Tool Uses ━━━
+  PASS: Handled consecutive tool calls with response
+
+━━━ TEST 11: Skill Installation (ClawHub) ━━━
+  PASS: Skill installed and verified: lulu-monitor
+
+━━━ TEST 12: Muse Extension (OpenClaw) ━━━
+  FAIL: tribecode plugin is disabled - run: clawdbot plugins enable tribecode
+
+━━━ TEST 13: Shell Command Execution (exec) ━━━
+  PASS: exec tool working: returned command output
+
+━━━ TEST 14: Web Search (web_search) ━━━
+  WARN: web_search requires Brave API key configuration
+  PASS: web_search tool recognized (API key not configured)
+
+━━━ TEST 15: Browser Automation (browser) ━━━
+  WARN: Browser not currently running (tool is available)
+  PASS: browser tool verified: returned status details
+
+━━━ TEST 16: File Operations (read/write) ━━━
+  PASS: File write/read working: value matched
+
+━━━ TEST 17: Sub-agent Communication (sessions) ━━━
+  PASS: agents_list verified: main agent found
+
+━━━ TEST 18: Background Process Management (process) ━━━
+  PASS: process tool verified: background status reported
+
+━━━ TEST 19: Image Analysis (image) ━━━
+  WARN: Image tool not configured (requires imageModel)
+  PASS: image tool check completed (not configured)
+
+━━━ TEST 20: Session Status (session_status) ━━━
+  PASS: session_status working: Mistral Large 3 confirmed
+
+━━━ TEST 22: Multi-turn Context Retention ━━━
+  PASS: Context retained: secret code recalled correctly
+
+━━━ TEST 23: Research Task (web + summarize) ━━━
+  PASS: Research complete: HTTP 418 teapot explained with structure
+
+━━━ TEST 24: Code Generation Task ━━━
+  PASS: Code generation verified: correct output 55
+
+━━━ TEST 25: Memory Store and Recall ━━━
+  PASS: Memory operations working
+
+━━━ TEST 26: Skill-based Workflow (weather) ━━━
+  PASS: Weather skill working: location-aware response
+
+━━━ TEST 27: Multi-tool Chain ━━━
+  PASS: Multi-tool chain verified: correct byte count
+
+━━━ TEST 28: Long-form Response Quality ━━━
+  PASS: Response quality excellent: structured, formatted, comprehensive
+
+━━━ TEST 29: Error Recovery ━━━
+  PASS: Error recovery excellent: explained error and suggested action
+
+━━━ TEST 30: Complex Multi-step Instructions ━━━
+  CRITICAL FAIL: Empty response on complex instructions
+  FAIL: Complex instructions failed: CLAW_EMPTY_RESPONSE
+
+━━━ TEST 31: Adversarial Input Handling ━━━
+  PASS: Adversarial handled: correct answer (4), resisted misdirection
+
+━━━ TEST 32: Long Context Handling ━━━
+  PASS: Long context: found and followed hidden instruction
+
+━━━ TEST 33: JSON Output Formatting ━━━
