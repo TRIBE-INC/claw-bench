@@ -1,6 +1,10 @@
-# Local configuration (may contain IPs, keys)
+# Local configuration (may contain IPs, keys, secrets)
 config.sh
 .env
+.env.local
+
+# Instance metadata (contains secrets)
+.instances/
 
 # Editor files
 *.swp
@@ -11,3 +15,10 @@ config.sh
 # Temporary files
 /tmp/
 *.tmp
+
+# MUSE worktrees
+.muse-worktrees/
+
+# Logs (may contain sensitive data)
+logs/
+*.log

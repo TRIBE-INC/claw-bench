@@ -40,20 +40,36 @@ See [reports/](./reports/) for detailed test breakdowns.
 
 ## Quick Start
 
-### Local clawdbot
+### Option 1: Live AWS Instance Benchmarking (Recommended)
+
+The easiest way to benchmark models with real clawdbot instances:
 
 ```bash
-# Ensure clawdbot is running
-clawdbot gateway
+# 1. Configure environment
+cp .env.example .env
+# Edit .env with your AWS credentials and settings
 
-# Run benchmark
-./run.sh --local
+# 2. Run single model benchmark
+./benchmark-live.sh mistral-large-3
+
+# 3. Or run all models sequentially
+./benchmark-live.sh --all
+
+# 4. Or run in parallel with MUSE (requires TRIBE CLI)
+./benchmark-parallel.sh -n 3   # 3 concurrent benchmarks
 ```
 
-### Remote Instance (SSH)
+This automatically:
+- Launches EC2 instances with clawdbot pre-installed
+- Configures the specified model via Bedrock
+- Runs the full test suite
+- Generates reports in `reports/`
+- Terminates instances when done
+
+### Option 2: Manual SSH to Existing Instance
 
 ```bash
-# Configure SSH access
+# Configure SSH access to an existing clawdbot instance
 export CLAW_HOST="ubuntu@your-bot-ip"
 export CLAW_SSH_KEY="~/.ssh/your-key.pem"
 
@@ -61,26 +77,121 @@ export CLAW_SSH_KEY="~/.ssh/your-key.pem"
 ./run.sh --ssh
 ```
 
-### Direct Gateway API
+### Option 3: Local Clawdbot
+
+```bash
+# Ensure clawdbot is running locally (requires Node >=22)
+clawdbot gateway
+
+# Run benchmark
+./run.sh --local
+```
+
+### Option 4: Direct Gateway API
 
 ```bash
 # Configure gateway endpoint
 export CLAW_GATEWAY="http://localhost:18789"
 export CLAW_TOKEN="your-gateway-token"
 
-# Run benchmark
+# Run benchmark (not yet implemented)
 ./run.sh --api
 ```
 
 ## Installation
 
 ```bash
-git clone https://github.com/openclaw/clawdbot.git
-cd clawdbot/claw-bench
-chmod +x run.sh
+git clone https://github.com/TRIBE-INC/claw-bench.git
+cd claw-bench
+chmod +x *.sh infra/*.sh
 ```
 
-No dependencies beyond bash, curl, and jq.
+### Dependencies
+
+**Required:**
+- bash, curl, jq
+- AWS CLI (for live instance benchmarking)
+
+**Optional:**
+- TRIBE CLI (for parallel benchmarking with MUSE)
+
+### AWS Setup for Live Benchmarking
+
+```bash
+# 1. Install AWS CLI
+brew install awscli
+
+# 2. Configure credentials
+aws configure
+
+# 3. Copy and edit environment file
+cp .env.example .env
+# Set CLAWGO_AMI_ID, CLAWGO_SECURITY_GROUP_ID, etc.
+
+# 4. Create SSH key pair (if needed)
+aws ec2 create-key-pair --key-name claw-bench \
+  --query 'KeyMaterial' --output text > ~/.ssh/claw-bench.pem
+chmod 600 ~/.ssh/claw-bench.pem
+```
+
+## Infrastructure Scripts
+
+Located in `infra/`:
+
+| Script | Purpose |
+|--------|---------|
+| `launch-instance.sh` | Launch a benchmark EC2 instance |
+| `wait-for-ready.sh` | Wait for instance to be ready |
+| `terminate-instance.sh` | Terminate instance(s) safely |
+
+### Manual Instance Management
+
+```bash
+# Launch instance for specific model
+INSTANCE_ID=$(./infra/launch-instance.sh mistral.mistral-large-3-675b-instruct)
+
+# Wait for it to be ready
+PUBLIC_IP=$(./infra/wait-for-ready.sh $INSTANCE_ID)
+
+# Run benchmark manually
+CLAW_HOST="ubuntu@$PUBLIC_IP" ./run.sh --ssh
+
+# Clean up
+./infra/terminate-instance.sh $INSTANCE_ID
+
+# Or terminate all benchmark instances
+./infra/terminate-instance.sh --all
+```
+
+## Parallel Benchmarking with MUSE
+
+For running multiple model benchmarks concurrently:
+
+```bash
+# Install TRIBE CLI first
+curl -fsSL https://tribecode.ai/install.sh | bash
+
+# Run 3 concurrent benchmarks
+./benchmark-parallel.sh -n 3
+
+# Benchmark specific models
+./benchmark-parallel.sh -m "mistral-large-3,nova-pro"
+
+# Monitor progress
+./benchmark-parallel.sh --status
+
+# Collect results
+./benchmark-parallel.sh --collect
+
+# Clean up everything
+./benchmark-parallel.sh --cleanup
+```
+
+MUSE spawns isolated agents that each:
+1. Launch their own EC2 instance
+2. Run the full benchmark suite
+3. Generate reports
+4. Terminate the instance
 
 ## Configuration
 
