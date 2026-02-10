@@ -2,19 +2,19 @@
 
 A comprehensive benchmark suite for testing [clawdbot](https://github.com/openclaw/clawdbot) agents.
 
-## Benchmark Scores (2026-02-08)
+## Benchmark Scores (2026-02-09)
 
 | Model | Pass Rate | Input $/1M | Output $/1M | Notes |
 |-------|-----------|------------|-------------|-------|
-| **Claude Opus 4.5** | ✅ 100% (12/12) | $15.00 | $75.00 | Premium tier |
-| **Mistral Large 3** | ✅ 100% (12/12) | $0.50 | $1.50 | Best value |
-| Kimi K2 (Thinking) | 40% (5/12) | $0.60 | $2.50 | Empty responses after tool calls |
-| Kimi K2.5 | 9% (3/33) | $0.60 | $2.50 | Same empty response bug as K2 |
-| Amazon Nova Lite | 33% (4/12) | $0.06 | $0.24 | Ultra-cheap |
+| **Claude Opus 4.5** | ✅ 100% (12/12) | $5.00 | $25.00 | Best value + reliability |
+| **Mistral Large 3** | ✅ 100% (12/12) | $8.00 | $24.00 | Also 100% reliable |
+| Kimi K2 (Thinking) | 40% (5/12) | $0.55 | $2.19 | Empty responses after tool calls |
+| Kimi K2.5 | 9% (3/33) | $0.55 | $2.19 | Same empty response bug as K2 |
+| Amazon Nova Lite | 33% (4/12) | $0.06 | $0.24 | Ultra-cheap but unreliable |
 | Amazon Nova Pro | 25% (3/12) | $0.80 | $3.20 | Balanced |
 | DeepSeek R1 | 25% (3/12) | $1.35 | $5.40 | Reasoning model |
 | DeepSeek V3.1 | 25% (3/12) | $0.27 | $1.10 | Cheaper variant |
-| Llama 3.3 70B | 25% (3/12) | $0.72 | $0.72 | Open weights |
+| Llama 3.3 70B | 25% (3/12) | $0.99 | $0.99 | Open weights |
 
 See [reports/](./reports/) for detailed test breakdowns.
 
