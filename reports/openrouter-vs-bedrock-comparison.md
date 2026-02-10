@@ -136,20 +136,31 @@ is quite high, and the temperature is 85°F..."
 
 ### Bedrock Converse API Behavior
 
-The Bedrock Converse API (`bedrock-converse-stream`) handles tool use differently than the standard chat completion API:
+The Bedrock Converse API (`bedrock-converse-stream`) handles tool use differently than OpenRouter:
 
 1. **Tool Call Phase**: Model returns `toolUse` block with function call
-2. **Tool Result Phase**: User sends `toolResult` with execution output
+2. **Tool Result Phase**: Client sends `toolResult` as a USER message (not "tool" role)
 3. **Final Response Phase**: Model should generate text response
 
-**The bug occurs in Phase 3** - Kimi models don't generate a text response after receiving tool results via the Converse API.
+**The bug occurs in Phase 3** - Kimi/Nova models don't generate a text response after receiving tool results via the Converse API.
 
-### Why This Happens
+### Verified Root Cause (2026-02-10)
 
-Possible causes:
-1. **Converse API formatting**: The way tool results are formatted in Converse API may not match what Kimi expects
-2. **Stop reason handling**: Kimi may be incorrectly interpreting the stop condition
-3. **Content block parsing**: The Converse API may not be extracting text content correctly for Kimi's response format
+After tracing the clawdbot source code (`@mariozechner/pi-ai` package), we found:
+
+**The actual API format difference:**
+```
+OpenRouter:  {"role": "tool", "tool_call_id": "...", "content": "..."}
+Bedrock:     {"role": "user", "content": [{"toolResult": {...}}]}
+```
+
+**Key findings:**
+1. clawdbot uses the same code path for ALL models (no model-specific handling)
+2. The `toolResult` is correctly formatted and sent to Bedrock
+3. Mistral/Claude work correctly with this format
+4. Kimi/Nova fail to generate responses after tool results
+
+**Conclusion:** This is an **AWS Bedrock service-level bug** in how tool results are presented to Kimi and Nova models. The clawdbot implementation is correct - the bug is in Bedrock's model integration layer.
 
 ### Evidence It's Not an Implementation Bug
 

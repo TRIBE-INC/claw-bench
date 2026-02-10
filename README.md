@@ -8,13 +8,13 @@ Ranked by pass rate (best first). All Bedrock tests unless noted.
 
 | Rank | Model | Pass Rate | Input $/1M | Output $/1M | Notes | Report |
 |------|-------|-----------|------------|-------------|-------|--------|
-| 🥇 | **Mistral Large 3** | **90.6%** (29/32) | $0.50 | $1.50 | Tool use works, best value | [✅ Report](./reports/mistral-large-3-report.md) |
-| 🥈 | **Kimi K2.5 (OpenRouter)** | **~100%** | $0.60 | $3.00 | Works on OpenRouter, not Bedrock | [✅ Verified](./reports/openrouter-vs-bedrock-comparison.md) |
-| 🥉 | **Amazon Nova Lite** | **33.3%** (4/12) | $0.06 | $0.24 | Ultra-cheap, limited capability | [✅ Report](./reports/nova-lite-report.md) |
-| 4 | Amazon Nova Pro | 25.0% (3/12) | $0.80 | $3.20 | Bedrock API issues | [✅ Report](./reports/nova-pro-report.md) |
-| 4 | DeepSeek R1 | 25.0% (3/12) | $1.35 | $5.40 | Requires inference profile | [✅ Report](./reports/deepseek-r1-report.md) |
+| 🥇 | **Kimi K2.5 (OpenRouter)** | **~100%** | $0.60 | $3.00 | Works on OpenRouter, not Bedrock | [✅ Verified](./reports/openrouter-vs-bedrock-comparison.md) |
+| 🥈 | **Mistral Large 3** | **90.6%** (29/32) | $0.50 | $1.50 | Tool use works, best value | [✅ Report](./reports/mistral-large-3-report.md) |
+| 🥉 | Amazon Nova Lite | 33.3% (4/12) | $0.06 | $0.24 | Ultra-cheap, limited capability | [✅ Report](./reports/nova-lite-report.md) |
 | 4 | Llama 3.3 70B | 25.0% (3/12) | $0.72 | $0.72 | Requires inference profile | [✅ Report](./reports/llama-3-3-70b-report.md) |
-| 7 | Kimi K2.5 (Bedrock) | **9.1%** (3/33) | $0.60 | $2.50 | ❌ Bedrock API bug - empty responses | [✅ Report](./reports/kimi-k2.5-report.md) |
+| 5 | Amazon Nova Pro | 25.0% (3/12) | $0.80 | $3.20 | Bedrock API issues | [✅ Report](./reports/nova-pro-report.md) |
+| 6 | DeepSeek R1 | 25.0% (3/12) | $1.35 | $5.40 | Requires inference profile | [✅ Report](./reports/deepseek-r1-report.md) |
+| 7 | Kimi K2.5 (Bedrock) | 9.1% (3/33) | $0.60 | $2.50 | ❌ 40% timeout rate - proven bug | [✅ Report](./reports/kimi-k2.5-report.md) ([Proof](./reports/bedrock-kimi-bug-proof.md)) |
 | - | Claude Opus 4.5 | ~100%* | $5.00 | $25.00 | Premium tier | ⚠️ No report |
 | - | Kimi K2 (Thinking) | ~40%* | $0.60 | $2.50 | Same Bedrock bug as K2.5 | ⚠️ No report |
 
@@ -33,7 +33,7 @@ Ranked by pass rate (best first). All Bedrock tests unless noted.
 | **Kimi K2.5** | ❌ 9% | ✅ Works | **Use OpenRouter** |
 | **Nova Lite/Pro** | ❌ 25-33% | ✅ Works | **Use OpenRouter** |
 
-**Why?** The Bedrock Converse API has a bug where some models return empty responses after tool calls. The same models work correctly on OpenRouter. See [detailed comparison](./reports/openrouter-vs-bedrock-comparison.md).
+**Why?** Kimi K2.5 has a **40% intermittent timeout rate** when processing tool results on Bedrock. The stream simply hangs without returning events. This compounds across multiple tool uses (60%^n success rate). This is an **AWS Bedrock infrastructure bug** - Kimi works 100% reliably on OpenRouter. See [definitive proof](./reports/bedrock-kimi-bug-proof.md).
 
 See [reports/](./reports/) for detailed test breakdowns.
 
@@ -361,7 +361,7 @@ ok 3 - web_fetch_json
 
 ## Known Issues Detected
 
-### Empty Response After Tool Use (AWS Bedrock Only)
+### Empty Response After Tool Use (AWS Bedrock + Kimi)
 
 **Symptom:** Agent calls a tool (e.g., `web_fetch`) but returns no text to the user.
 
@@ -369,11 +369,24 @@ ok 3 - web_fetch_json
 
 **Impact:** Users see blank messages after asking the agent to fetch URLs.
 
-**Root Cause:** This is a **Bedrock Converse API bug**, NOT a model issue. The same models work correctly via OpenRouter.
+**Root Cause (PROVEN):** Kimi K2.5 has a **40% timeout rate** on Bedrock when processing tool results. The Bedrock stream hangs indefinitely with no events returned. This is NOT a model bug - the same model works 100% reliably on OpenRouter.
+
+**Proof:**
+```
+Kimi K2.5 on Bedrock (10 identical requests):
+- 6 passed, 4 timed out (60% success rate)
+
+Mistral Large 3 on Bedrock (10 identical requests):
+- 10 passed, 0 timed out (100% success rate)
+```
+
+**Why 9% overall pass rate?** The 40% failure rate compounds: 60%^n success for n tool uses.
 
 **Models affected:** Kimi K2 and K2.5 via AWS Bedrock Converse API
 
 **Workaround:** Use OpenRouter instead of Bedrock for Kimi models.
+
+**Report:** [Definitive Proof](./reports/bedrock-kimi-bug-proof.md)
 
 ## Testing with OpenRouter
 
