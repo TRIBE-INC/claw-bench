@@ -99,6 +99,39 @@ Claude works correctly on both APIs.
 
 Note: Llama showed unusual behavior on OpenRouter, returning a description of the function call rather than using the tool result.
 
+### Amazon Nova Lite
+
+| Test Case | OpenRouter | Bedrock Converse |
+|-----------|------------|------------------|
+| Basic chat | ✅ Works | ✅ Works |
+| Tool calling | ✅ Works | ❌ FAIL |
+| Response after tool | ✅ Works | ❌ FAIL |
+| Reasoning tags | ✅ No leakage | ❌ FAIL |
+
+**OpenRouter Response:**
+```
+"Based on the weather data that I found, the humidity level currently in Miami
+is quite high, and the temperature is 85°F..."
+```
+
+**Bedrock Pass Rate:** 33% (4/12) - Failed tool_use_response, web_fetch, data_extraction
+
+### Amazon Nova Pro
+
+| Test Case | OpenRouter | Bedrock Converse |
+|-----------|------------|------------------|
+| Basic chat | ✅ Works | ❌ FAIL |
+| Tool calling | ✅ Works | ❌ FAIL |
+| Response after tool | ✅ Works | ❌ FAIL |
+| Reasoning tags | ✅ No leakage | ❌ FAIL |
+
+**OpenRouter Response:**
+```
+"The current weather in Seattle is rainy, with a temperature of 52 degrees Fahrenheit."
+```
+
+**Bedrock Pass Rate:** 25% (3/12) - Even basic_chat failed
+
 ## Root Cause Analysis
 
 ### Bedrock Converse API Behavior
@@ -170,15 +203,35 @@ The Converse API uses a different message structure with content blocks instead 
 
 ## Conclusion
 
-**The empty response bug is a Bedrock Converse API issue with Kimi models, not a ClawGo implementation bug.**
+**Multiple models have Bedrock Converse API issues that don't exist on OpenRouter.**
 
-Evidence:
-- ✅ Same implementation works for Claude
-- ✅ Kimi works correctly on OpenRouter
-- ✅ Bug is consistent and reproducible
-- ✅ Failure pattern matches Converse API response handling
+### Models with Bedrock-Specific Bugs
 
-**Recommendation:** Use OpenRouter for Kimi models until AWS/Moonshot fixes the Bedrock integration.
+| Model | OpenRouter | Bedrock | Issue Type |
+|-------|------------|---------|------------|
+| Kimi K2.5 | ✅ 100% tool use | ❌ 9% pass | Empty response after tool |
+| Kimi K2 | ✅ Works | ❌ ~40% pass | Empty response after tool |
+| Nova Lite | ✅ Works | ❌ 33% pass | Tool use failures |
+| Nova Pro | ✅ Works | ❌ 25% pass | Even basic chat fails |
+
+### Models That Work on Bedrock
+
+| Model | Status |
+|-------|--------|
+| Claude Opus 4.5 | ✅ ~100% (estimated) |
+| Mistral Large 3 | ⚠️ Untested (SSH failure) |
+
+### Evidence This Is Not an Implementation Bug
+
+- ✅ Same ClawGo code works for Claude on Bedrock
+- ✅ Kimi, Nova work correctly on OpenRouter with same prompts
+- ✅ Bugs are consistent and reproducible
+- ✅ Failure patterns match Converse API response handling
+
+**Recommendation:**
+- Use **Claude** on Bedrock (works correctly)
+- Use **OpenRouter** for Kimi and Nova models
+- Test Mistral on Bedrock once SSH is fixed
 
 ---
 *Generated 2026-02-10*
