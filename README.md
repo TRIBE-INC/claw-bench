@@ -8,8 +8,8 @@ A comprehensive benchmark suite for testing [clawdbot](https://github.com/opencl
 |-------|-----------|------------|-------------|-------|
 | **Claude Opus 4.5** | ✅ 100% (12/12) | $5.00 | $25.00 | Best value + reliability |
 | **Mistral Large 3** | ✅ 100% (12/12) | $8.00 | $24.00 | Also 100% reliable |
-| Kimi K2 (Thinking) | 40% (5/12) | $0.55 | $2.19 | Empty responses after tool calls |
-| Kimi K2.5 | 9% (3/33) | $0.55 | $2.19 | Same empty response bug as K2 |
+| Kimi K2 (Thinking) | 40% (5/12) | $0.60 | $3.00 | Empty responses after tool calls |
+| Kimi K2.5 | 9% (3/33) | $0.60 | $3.00 | Same empty response bug as K2 |
 | Amazon Nova Lite | 33% (4/12) | $0.06 | $0.24 | Ultra-cheap but unreliable |
 | Amazon Nova Pro | 25% (3/12) | $0.80 | $3.20 | Balanced |
 | DeepSeek R1 | 25% (3/12) | $1.35 | $5.40 | Reasoning model |
