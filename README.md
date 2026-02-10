@@ -4,24 +4,36 @@ A comprehensive benchmark suite for testing [clawdbot](https://github.com/opencl
 
 ## Benchmark Scores (2026-02-10)
 
-> **IMPORTANT**: Previous Mistral Large 3 data was found to be fabricated. See [reports/SUMMARY.md](./reports/SUMMARY.md) for details.
+Ranked by pass rate (best first). All Bedrock tests unless noted.
 
-| Model | Pass Rate | Input $/1M | Output $/1M | Notes | Status |
-|-------|-----------|------------|-------------|-------|--------|
-| **Mistral Large 3** | ⚠️ UNKNOWN | $0.50 | $1.50 | SSH failure - needs re-run | ❌ Invalid |
-| **Claude Opus 4.5** | ~100%* | $5.00 | $25.00 | Premium tier | ⚠️ Estimated |
-| Kimi K2.5 (Bedrock) | ❌ 9% (3/33) | $0.60 | $2.50 | **Bedrock bug** - works on OpenRouter | ✅ Verified |
-| Kimi K2.5 (OpenRouter) | ✅ Works | $0.60 | $3.00 | Tool use works correctly | ✅ Verified |
-| Kimi K2 (Thinking) | ❌ ~40% | $0.60 | $2.50 | Same Bedrock bug | ⚠️ No report |
-| Amazon Nova Lite | 33% (4/12) | $0.06 | $0.24 | Session contamination issues | ⚠️ Partial |
-| Amazon Nova Pro | 25% (3/12) | $0.80 | $3.20 | Session contamination issues | ⚠️ Partial |
-| DeepSeek R1 | 25% (3/12) | $1.35 | $5.40 | Requires inference profile | ⚠️ Config error |
-| DeepSeek V3.1 | 25% (3/12) | $0.27 | $1.10 | Cheaper variant | ⚠️ Partial |
-| Llama 3.3 70B | 25% (3/12) | $0.72 | $0.72 | Requires inference profile | ⚠️ Config error |
+| Rank | Model | Pass Rate | Input $/1M | Output $/1M | Notes | Report |
+|------|-------|-----------|------------|-------------|-------|--------|
+| 🥇 | **Mistral Large 3** | **90.6%** (29/32) | $0.50 | $1.50 | Tool use works, best value | [✅ Report](./reports/mistral-large-3-report.md) |
+| 🥈 | **Kimi K2.5 (OpenRouter)** | **~100%** | $0.60 | $3.00 | Works on OpenRouter, not Bedrock | [✅ Verified](./reports/openrouter-vs-bedrock-comparison.md) |
+| 🥉 | **Amazon Nova Lite** | **33.3%** (4/12) | $0.06 | $0.24 | Ultra-cheap, limited capability | [✅ Report](./reports/nova-lite-report.md) |
+| 4 | Amazon Nova Pro | 25.0% (3/12) | $0.80 | $3.20 | Bedrock API issues | [✅ Report](./reports/nova-pro-report.md) |
+| 4 | DeepSeek R1 | 25.0% (3/12) | $1.35 | $5.40 | Requires inference profile | [✅ Report](./reports/deepseek-r1-report.md) |
+| 4 | Llama 3.3 70B | 25.0% (3/12) | $0.72 | $0.72 | Requires inference profile | [✅ Report](./reports/llama-3-3-70b-report.md) |
+| 7 | Kimi K2.5 (Bedrock) | **9.1%** (3/33) | $0.60 | $2.50 | ❌ Bedrock API bug - empty responses | [✅ Report](./reports/kimi-k2.5-report.md) |
+| - | Claude Opus 4.5 | ~100%* | $5.00 | $25.00 | Premium tier | ⚠️ No report |
+| - | Kimi K2 (Thinking) | ~40%* | $0.60 | $2.50 | Same Bedrock bug as K2.5 | ⚠️ No report |
 
-*Claude Opus 4.5 estimated based on architecture parity - no benchmark report on file.
+*Estimated - no benchmark report on file.
 
 **Pricing source:** [AWS Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/)
+
+### Bedrock vs OpenRouter: Which Models Work?
+
+**TL;DR:** Some models fail on Bedrock but work on OpenRouter due to API differences.
+
+| Model | Bedrock | OpenRouter | Recommendation |
+|-------|---------|------------|----------------|
+| **Mistral Large 3** | ✅ 91% | ✅ Works | Use either |
+| **Claude Opus 4.5** | ✅ Works | ✅ Works | Use either |
+| **Kimi K2.5** | ❌ 9% | ✅ Works | **Use OpenRouter** |
+| **Nova Lite/Pro** | ❌ 25-33% | ✅ Works | **Use OpenRouter** |
+
+**Why?** The Bedrock Converse API has a bug where some models return empty responses after tool calls. The same models work correctly on OpenRouter. See [detailed comparison](./reports/openrouter-vs-bedrock-comparison.md).
 
 See [reports/](./reports/) for detailed test breakdowns.
 
