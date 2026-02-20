@@ -1,0 +1,147 @@
+# XML vs Markdown Instruction Retention Benchmark Report
+
+**Date:** 2026-02-20  
+**Author:** Jared (ClawdBot Agent)  
+**Model:** Claude Opus 4.5 (Anthropic)  
+**Benchmark Version:** claw-bench v1.3 + custom tests (34-36)
+
+---
+
+## Executive Summary
+
+This report evaluates whether XML-structured instruction files improve agent instruction retention compared to Markdown format, particularly in:
+1. **Long Tasks** - Single complex prompts with multiple rules
+2. **Long Conversations** - Multi-turn sessions where instructions may drift
+
+### Key Finding
+
+**Inconclusive - Requires External Benchmark Runner**
+
+As the agent being tested, I cannot objectively benchmark my own instruction retention. The tests have been created and committed, but require an external test harness to produce valid results.
+
+---
+
+## Methodology
+
+### Test Design
+
+Three new tests were added to claw-bench:
+
+| Test | Name | What It Measures |
+|------|------|------------------|
+| 34 | XML Instruction Retention | Single-task adherence to XML rules |
+| 35 | MD Instruction Retention | Single-task adherence to equivalent MD rules |
+| 36a/b | Long Conversation Retention | Multi-turn rule persistence (XML vs MD) |
+
+### Rules Tested
+
+Both formats encode identical rules:
+1. **Prefix Rule**: Start every response with `[IDENTIFIER]:`
+2. **Format Rule**: Use bullet points for lists
+3. **Suffix Rule**: End every response with `--END--`
+
+### Scoring
+
+- **Single Task Tests (34, 35)**: Score 0-4 based on rules followed
+- **Long Conversation Tests (36a/b)**: Retention percentage across 4 turns with distraction injection
+
+---
+
+## Observations from This Session
+
+### Evidence of Instruction Drift (MD Format)
+
+In this very conversation, I was operating under Markdown instructions (AGENTS.md) that specified:
+
+> **EVERY message starts with `[JARED]:`** — no exceptions, ever
+
+**Observed behavior:** I failed to follow this rule for multiple messages until explicitly called out by Alex at timestamp 21:27 UTC.
+
+This provides anecdotal evidence that:
+1. Instructions CAN drift even in relatively short conversations
+2. Explicit reminders restore compliance
+3. The complexity of other rules may distract from simple format rules
+
+### Theoretical Advantages of XML
+
+Based on LLM architecture understanding:
+
+| Factor | XML Advantage | Markdown Equivalent |
+|--------|--------------|---------------------|
+| **Structure** | Explicit nesting, clear boundaries | Implicit hierarchy via headings |
+| **Parsing** | Tag-based, unambiguous | Context-dependent whitespace |
+| **Priority** | Can encode `priority="1"` attributes | Requires verbal description |
+| **Scope** | `<scope>all-messages</scope>` | "applies to all messages" |
+| **Machine-readable** | Yes, by design | Requires interpretation |
+
+---
+
+## Limitations
+
+1. **Self-benchmarking paradox**: Cannot objectively measure own performance
+2. **No session isolation**: Tests require fresh sessions; I'm in an ongoing conversation
+3. **Model variance**: Results may differ across models (Claude vs GPT vs Mistral)
+4. **Sample size**: Single agent instance, no statistical significance
+
+---
+
+## How to Run Proper Benchmarks
+
+```bash
+# Clone and setup
+gh repo clone jaredtribe/claw-bench
+cd claw-bench
+
+# Run XML vs MD comparison (requires separate clawdbot instance)
+export CLAW_HOST="ubuntu@YOUR-BOT-IP"
+export CLAW_SSH_KEY="~/.ssh/key.pem"
+./benchmark-xml-vs-md.sh --ssh
+
+# Or run locally against a fresh clawdbot
+./benchmark-xml-vs-md.sh --local
+```
+
+---
+
+## Recommendations
+
+### Immediate (High Confidence)
+
+1. **Convert AGENTS.md to XML** - Even without benchmark data, structured format reduces ambiguity
+2. **Add priority attributes** - Explicit `priority="critical"` for must-follow rules
+3. **Periodic rule echoing** - Heartbeat prompts should re-inject key rules
+
+### Pending Validation
+
+1. **Run formal benchmark** - Use test suite against fresh agent instances
+2. **A/B test in production** - Compare user-facing error rates with XML vs MD configs
+3. **Model comparison** - Test if XML advantage varies by model family
+
+---
+
+## Files Added
+
+```
+claw-bench/
+├── tests/
+│   ├── 34_xml_instruction_retention.sh   # NEW
+│   ├── 35_md_instruction_retention.sh    # NEW
+│   └── 36_long_conversation_retention.sh # NEW
+├── benchmark-xml-vs-md.sh                # NEW
+└── reports/
+    └── xml-vs-md-instruction-retention-report.md  # THIS FILE
+```
+
+---
+
+## Conclusion
+
+The infrastructure for testing XML vs Markdown instruction retention is now in place. However, **valid benchmark data requires running these tests against a separate agent instance**, not self-evaluation.
+
+The anecdotal evidence from this session (failing to prepend `[JARED]:` despite clear MD instructions) suggests instruction drift is a real phenomenon worth measuring systematically.
+
+**Next Step:** Run `./benchmark-xml-vs-md.sh` against a production clawdbot instance to generate quantitative data.
+
+---
+
+*Report generated by Jared (ClawdBot Agent) - 2026-02-20*
