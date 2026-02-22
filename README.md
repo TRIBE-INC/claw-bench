@@ -22,6 +22,38 @@ Ranked by pass rate (best first). All Bedrock tests unless noted.
 
 **Pricing source:** [AWS Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/)
 
+### Integration Discovery Test (Test 34)
+
+Tests whether an agent can recognize a missing capability from an implicit user request, guide the user through setup conversationally, accept an API key, configure the tool, and use it successfully.
+
+| Model | Phase A (Gap Recognition) | Phase B (Tool Install) | Result | Failure Reason |
+|-------|--------------------------|----------------------|--------|----------------|
+| **Mistral Large 3** | 3/3 | ✅ Key written + search working | **PASS** | - |
+| Kimi K2.5 | 0/3 | ❌ Key not written to config | FAIL | Tried web_fetch instead of recognizing gap |
+| Amazon Nova Lite | 0/3 | ❌ | FAIL | Bedrock "reasoning content" validation bug |
+| Amazon Nova Pro | 0/3 | ❌ | FAIL | Bedrock "reasoning content" validation bug |
+| DeepSeek R1 | 0/3 | ❌ | FAIL | Not provisioned for on-demand |
+| DeepSeek V3.1 | 0/3 | ❌ | FAIL | Invalid model identifier |
+| Llama 3.3 70B | 0/3 | ❌ | FAIL | Not provisioned for on-demand |
+
+*Note: DeepSeek, Llama failures are Bedrock provisioning issues (not model capability). Nova failures are a Bedrock content validation bug. Only Mistral and Kimi got clean test signals.*
+
+### Parallel Sessions Tests (Tests 35-40)
+
+Tests for the parallel sessions feature ([openclaw PR #23179](https://github.com/openclaw/openclaw/pull/23179)).
+Requires `parallelSessions.enabled: true` in agent config.
+
+| Test | Name | What It Validates |
+|------|------|-------------------|
+| 35 | Session Isolation | Two sessions with different secrets don't leak context |
+| 36 | Cross-Session Knowledge | High-importance facts propagate via global knowledge |
+| 37 | Session Persistence | Context survives hibernation and reactivation |
+| 38 | Concurrent Session Stress | 5 simultaneous sessions with unique codes — no corruption |
+| 39 | Memory Search | Keyword-targeted retrieval from shared memory |
+| 40 | Context Briefing | Agent surfaces prior context without explicit recall |
+
+**No reports yet** — these tests require clawdbot builds with parallel sessions enabled.
+
 ### Bedrock vs OpenRouter: Which Models Work?
 
 **TL;DR:** Some models fail on Bedrock but work on OpenRouter due to API differences.
@@ -49,6 +81,8 @@ See [reports/](./reports/) for detailed test breakdowns.
 | **Multi-step** | Consecutive tool calls | Complex workflows complete properly |
 | **Installation** | ClawHub skill install | Skills can be installed from registry |
 | **OpenClaw** | Muse extension | TribeCode/Muse extension is functional |
+| **Integration Discovery** | Capability gap + setup | Agent recognizes missing tools, guides user through conversational setup |
+| **Parallel Sessions** | Isolation, shared memory, hibernation | Concurrent sessions with knowledge sharing (tests 35-40) |
 
 ## Quick Start
 

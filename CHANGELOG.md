@@ -1,5 +1,36 @@
 # Claw-Bench Changelog
 
+## [1.5.0] - 2026-02-21
+
+### Added - Parallel Sessions Benchmarks
+New test category for the parallel sessions feature (openclaw PR #23179).
+Tests session isolation, shared memory, hibernation, and concurrent session management.
+
+**New Tests (35-40):**
+- TEST 35: Session Isolation - two sessions with different secrets, verifies no leakage
+- TEST 36: Cross-Session Knowledge Sharing - high-importance facts propagate via global knowledge
+- TEST 37: Session Persistence - context survives hibernation and reactivation
+- TEST 38: Concurrent Session Stress - 5 simultaneous sessions with unique codes
+- TEST 39: Memory Search Across Sessions - keyword-targeted retrieval from shared memory
+- TEST 40: Context Briefing Verification - agent surfaces prior context proactively
+
+**Prerequisites:**
+- Requires `parallelSessions.enabled: true` in agent config
+- Requires openclaw with parallel sessions support (PR #23179)
+
+### Benchmark Coverage (v1.5)
+| Category | Tests | Coverage |
+|----------|-------|----------|
+| Core Agent | 0-12 | Basic functionality |
+| Extended Tools | 13-20 | All major clawdbot tools |
+| Use Cases | 22-28 | Real-world scenarios |
+| Robustness | 29-31 | Error handling, edge cases |
+| Stress | 32-33 | Long context, structured output |
+| Advanced Reasoning | 34 | Integration discovery |
+| Parallel Sessions | 35-40 | Session isolation, shared memory, hibernation |
+
+---
+
 ## [1.3.0] - 2026-02-08
 
 ### Added - Stress & Integration Tests
